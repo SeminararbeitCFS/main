@@ -1,0 +1,25 @@
+Literatur Completely Fair Scheduler
+
+Ingo Molnar, This is the CFS
+	http://people.redhat.com/mingo/cfs-scheduler/sched-design-CFS.txt
+	http://people.redhat.com/mingo/cfs-scheduler/
+
+The CFS - Thomas Gleixner - Linuxfoundation Japan Symposium
+	https://www.linuxfoundation.jp/jp_uploads/seminar20080709/lfjp2008.pdf
+	
+IBM DeveloperWorks
+	https://www.ibm.com/developerworks/linux/library/l-completely-fair-scheduler/
+	
+Linuxjournal
+	http://www.linuxjournal.com/magazine/completely-fair-scheduler
+	
+The Linux Scheduler: a Decade of Wasted Cores - Paper
+	https://www.ece.ubc.ca/~sasha/papers/eurosys16-final29.pdf
+	
+Understanding the Linux kernel : [from I/0 ports to process management; covers version 2.6] / Daniel P. Bovet and Marco Cesati
+	https://www.ub-katalog.fernuni-hagen.de/F/VXM2XQPLKBSBHETKB2VX56JV8NREJVL2PEYEJDBS3V6NVLGY8F-14084?func=full-set-set&set_number=003184&set_entry=000007&format=999
+
+Literatur Rot-Schwarz-Baum
+Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, Clifford Stein: Introduction to Algorithms. 2. Auflage. MIT Press, Cambridge (Massachusetts) 2001, ISBN 0-262-03293-7, S. 273–301.
+
+Kurt Mehlhorn: Datenstrukturen und effiziente Algorithmen. Teubner Stuttgart 1988, ISBN 3-519-12255-3.
