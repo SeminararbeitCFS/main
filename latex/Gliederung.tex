@@ -1,12 +1,12 @@
 Entwurf für Gliederung
-
+----------------------
 
 0. Abstract
 1. Einleitung
-	 CFS Ablösung von O(1) seit Kernel-Version 2.6.23
+	CFS Ablösung von O(1) seit Kernel-Version 2.6.23
 
-	 Literatur:
-	 Ingo Molnar, This is the CFS
+	Literatur:
+	Ingo Molnar, This is the CFS
 		http://people.redhat.com/mingo/cfs-scheduler/sched-design-CFS.txt
 
 	Inside the Linux 2.6 CFS - IBM DeveloperWorks
@@ -14,46 +14,49 @@ Entwurf für Gliederung
 
 2. Theorie
 2.1 kurze Wiederholung Scheduling
-	 Definition
-	 Ziele,Kriterien, die ein "guter" Scheduler Erfüllen muss
+	Definition
+	Ziele,Kriterien, die ein "guter" Scheduler Erfüllen muss
 
-	 Literatur:
-	 Pinedo, Michael: Scheduling: theory, algorithms, and systems. 4th ed.
-	 Springer, 2012
-	 Silberschatz, Ari: Operating System Concepts. Wiley, 2009
+	Literatur:
+	Pinedo, Michael: Scheduling: theory, algorithms, and systems. 4th ed.
+	Springer, 2012
+	Silberschatz, Ari: Operating System Concepts. Wiley, 2009
 
 2.2 Theorethische Grundlagen ROT-SCHWARZ-Baum
 	O-Aufwände, Einfügen, Suchen, Herausnehmen
 
-	 Literatur:
-	 Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, Clifford Stein: Introduction to Algorithms. 2. Auflage. MIT Press, Cambridge (Massachusetts) 2001, ISBN 0-262-03293-7, S. 273–301.
+	Literatur:
+	Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, Clifford Stein: Introduction to Algorithms. 2. Auflage. MIT Press, Cambridge (Massachusetts) 2001, ISBN 0-262-03293-7, S. 273–301.
 
-	 Kurt Mehlhorn: Datenstrukturen und effiziente Algorithmen. Teubner Stuttgart 1988, ISBN 3-519-12255-3.
+	Kurt Mehlhorn: Datenstrukturen und effiziente Algorithmen. Teubner Stuttgart 1988, ISBN 3-519-12255-3.
 
 3. Der Completely-Fair-Scheduler
-  Grundlegender Aufbau / Internas
-		Elementar: virtual runtime
-		Priorities (wie werden Sie genutzt)
-		Group Scheduling (Erweiterung)
-		Scheduling-Classes
+  	Grundlegender Aufbau / Internas
+	Elementar: virtual runtime
+	Priorities (wie werden Sie genutzt)
+	Group Scheduling (Erweiterung)
+	Scheduling-Classes
 	Vergleich zum Vorgänger O(1) (hinsichtlich O-Notation,Arbeitsweise)
-	Darstellugn der C-Strukturen in Verbindung mit dem Rot-Schwarz-Baum
-		C-Strukturen
-		Methoden zum Einfügen, Suchen, Löschen von Blättern -> graphische Simulation?
+	Darstellung der C-Strukturen in Verbindung mit dem Rot-Schwarz-Baum
+	C-Strukturen
+	Methoden zum Einfügen, Suchen, Löschen von Blättern -> graphische Simulation?
 	Tuning?
 
-		Literatur:
+	Literatur:
 
-		The CFS - Thomas Gleixner - Linuxfoundation Japan Symposium
-			https://www.linuxfoundation.jp/jp_uploads/seminar20080709/lfjp2008.pdf
+	The CFS - Thomas Gleixner - Linuxfoundation Japan Symposium
+		https://www.linuxfoundation.jp/jp_uploads/seminar20080709/lfjp2008.pdf
 
-		Linuxjournal
-			http://www.linuxjournal.com/magazine/completely-fair-scheduler
+	Linuxjournal
+		http://www.linuxjournal.com/magazine/completely-fair-scheduler
 
-		The Linux Scheduler: a Decade of Wasted Cores - Paper
-			https://www.ece.ubc.ca/~sasha/papers/eurosys16-final29.pdf
+	The Linux Scheduler: a Decade of Wasted Cores - Paper
+		https://www.ece.ubc.ca/~sasha/papers/eurosys16-final29.pdf
 
-		Understanding the Linux kernel : [from I/0 ports to process management; covers version 2.6] / Daniel P. Bovet and Marco Cesati
-			https://www.ub-katalog.fernuni-hagen.de/F/VXM2XQPLKBSBHETKB2VX56JV8NREJVL2PEYEJDBS3V6NVLGY8F-14084?func=full-set-set&set_number=003184&set_entry=000007&format=999
+	Understanding the Linux kernel : [from I/0 ports to process management; covers version 2.6] / Daniel P. Bovet and Marco Cesati
+		https://www.ub-katalog.fernuni-hagen.de/F/VXM2XQPLKBSBHETKB2VX56JV8NREJVL2PEYEJDBS3V6NVLGY8F-14084?func=full-set-set&set_number=003184&set_entry=000007&format=999
+
+	Linux Kernel Development - A thorough guide to the design and implementation of the Linux kernel
+		http://www.pi6.fernuni-hagen.de/downloads/OS/Scheduling/l-lkd-10.pdf
 
 4. Zusammenfassung
