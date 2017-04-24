@@ -10,6 +10,7 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{graphicx}
 
 \begin{document}
 
@@ -43,23 +44,8 @@ und Alt, vgl. \cite{mingo,mjones,Ivory2001,Black1988}.
 
 \subsection{Scheduling}
 
-\subsection{ROT-SCHWARZ-Baum}
-Der Rot-Schwarz-Baum stellt eine Erweiterung des bin-ären Suchbaums dar. Er wurde 1972 zum ersten mal von Rudolf Bayer unter dem Namen \glqq symmetric binary B-Tree\grqq{} vorgestellt.
-
-Ein binärer Suchbaum eignet sich zum schnellen Finden von Schlüsselelementen. Dabei werden die Elemente nicht wie in einer Liste sequentiell durchsucht, sondern es wird mit einer bestimmten Logik vorgegangen.
-Dadurch kann eine im Vergleich extrem niedrige Laufzeit erlangt werden. 
-
-Die Anordnung der Elemente wird, wie im Namen bereits enthalten, als Baum vorgenommen. Dabei müssen bestimmte Kriterien für die Anordnung eingehalten werden. Liegt eine Anzahl von Elementen vor, die als Binär-Baum angeordnet werden sollen, so wird zunächst ein beliebiges Element ausgewählt und als Wurzel gesetzt. Damit kann es allerdings passieren, dass der Baum später nicht ausgeglichen ist, und alle Äste unterschiedliche Dimensionen aufweisen. Dies würde zu einer unausgewogenen Suche führen. Daher ist es Sinnvoll an dieser Stelle ein Element mit einem Schlüsselwert zu finden, welcher relativ in der Mitte liegt und welcher sich zudem auch bezüglich der Anzahl der Elemente in der Mitte befindet.
-
-Danach werden die nächste Elemente der Reihe nach mit der Wurzel verglichen. Ist das momentan betrachtete Elemente größer als das Wurzel-Element, so wird es an der rechten Seite unter der Wurzel angeordnet. Ist es kleiner als die Wurzel, so kommt es auf die linke Seite. Nun kann das nächste Element mit der Wurzel verglichen werden. Wie im obigen Fall wird es wenn es größer ist der rechten Seite zugeordnet und wenn es kleiner ist der linke Seite. An dieser Stelle kann es jetzt passieren, dass auf der ausgewählten Seite bereits ein Blatt bzw. ein Knoten existiert. Hier muss nun ein weiterer Vergleich stattfinden. Wiederum wird geprüft, ob des momentan ausgewählte Elemente größer oder kleiner ist. Dann wird es unter dieses Element als Blatt angefügt. Damit entsteht der Baum. Wichtig ist, dass jeder Knoten nur maximal 2 Elemente besitzen kann. 
-
-Die Suche nachher im Baum gestaltet sich ähnlich. Soll ein Element im Baum gesucht werden, so wird ein Vergleich an der Wurzel des Baumes gestartet. Ist der Schlüssel des zu suchenden Elements größer, so wird auf die nächst untere Ebene der rechten Seite gewechselt. Ist der Schlüssel kleiner, dann findet der Wechsel entsprechend auf der linken Seite statt. 
-
-Der größte Vorteil dieser Anordnung besteht wohl in der erheblichen Verkürzung der Laufzeit. Während beim sequentiellen Suchen der Mittelwert der Laufzeit $(n+1)/2$ beträgt, kann die Laufzeit beim binären Suchbaum auf maximal $log_2(n+1)$ verkürzt werden.
-
-Der Rot-Schwarz-Baum erweitert nun eine solchen Binär-Baum mit Hilfe eines Farbattributs jedes Knotens bzw. Blattes. In diesem Fall werden die beiden Farben schwarz oder rot an jedes Elemente angehängt. Für die Wahl der 
-Dabei sind spezielle Regeln einzuhalten:
-
+%rot-schwarz Baum
+\include{sections/rb_tree}
 
 
 \section{Der Completely-Fair-Scheduler}
