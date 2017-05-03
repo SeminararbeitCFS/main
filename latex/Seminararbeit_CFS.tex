@@ -20,8 +20,6 @@
 \numberofauthors{2}
 \author{
   \alignauthor Lukas Essig\\
-    %\affaddr{Goldstraße 23}\\
-    %\affaddr{12345 Musterstadt}\\
     \email{lukas.essig@studium.fernuni-hagen.de}
   \alignauthor Peter Müller\\
     \email{peter.müller@studium.fernuni-hagen.de}
@@ -32,23 +30,24 @@
 \abstract{Die Geschichte der Gummi\-bär\-chen ist voller
 Über\-raschun\-gen\ldots} % Trennhilfe \- manchmal nützlich
 
-\keywords{CFS, ROT-SCHWARZ-Baum, Scheduling}
+\keywords{CFS, Rot-Schwarz-Baum, Scheduling}
 
 % Section-Überschriften werden in GROSSBUCHSTABEN umgestellt
 \section{Einleitung}
 
 Das Gummibärchen war schon immer ein Quell der Freude für Jung
-und Alt, vgl. \cite{mingo,mjones,Ivory2001,Black1988}.
+und Alt, vgl. \cite{mingo,mjones}.
 
-\section{Theorie}
-
-\subsection{Scheduling}
-
+\section{Grundlagen zum Scheduling}
+\input{sections/scheduling}
 %rot-schwarz Baum
-\include{sections/rb_tree}
+\input{sections/rb_tree}
 
 
 \section{Der Completely-Fair-Scheduler}
+\subsection{Grundlegender Aufbau}
+\subsection{Vergleich zum O(1)-Scheduler}
+\subsection{c-Strukturen}
 
 \section{Zusammenfassung}
 

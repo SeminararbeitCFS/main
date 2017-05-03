@@ -1,7 +1,6 @@
 Entwurf für Gliederung
 ----------------------
 
-0. Abstract
 1. Einleitung
 	CFS Ablösung von O(1) seit Kernel-Version 2.6.23
 
@@ -12,8 +11,8 @@ Entwurf für Gliederung
 	Inside the Linux 2.6 CFS - IBM DeveloperWorks
 		https://www.ibm.com/developerworks/library/l-completely-fair-scheduler/
 
-2. Theorie
-2.1 kurze Wiederholung Scheduling
+2. Grundlagen zum Scheduling
+2.1  Scheduling
 	Definition
 	Ziele,Kriterien, die ein "guter" Scheduler Erfüllen muss
 
@@ -22,7 +21,7 @@ Entwurf für Gliederung
 	Springer, 2012
 	Silberschatz, Ari: Operating System Concepts. Wiley, 2009
 
-2.2 Theorethische Grundlagen ROT-SCHWARZ-Baum
+2.2 Rot-Schwarz-Baum
 	O-Aufwände, Einfügen, Suchen, Herausnehmen
 
 	Literatur:
@@ -31,16 +30,21 @@ Entwurf für Gliederung
 	Kurt Mehlhorn: Datenstrukturen und effiziente Algorithmen. Teubner Stuttgart 1988, ISBN 3-519-12255-3.
 
 3. Der Completely-Fair-Scheduler
-  	Grundlegender Aufbau / Internas
-	Elementar: virtual runtime
-	Priorities (wie werden Sie genutzt)
-	Group Scheduling (Erweiterung)
-	Scheduling-Classes
-	Vergleich zum Vorgänger O(1) (hinsichtlich O-Notation,Arbeitsweise)
-	Darstellung der C-Strukturen in Verbindung mit dem Rot-Schwarz-Baum
-	C-Strukturen
-	Methoden zum Einfügen, Suchen, Löschen von Blättern -> graphische Simulation?
-	Tuning?
+  	3.1 Grundlegender Aufbau / Internas
+		Elementar: virtual runtime
+		Priorities (wie werden Sie genutzt)
+		Group Scheduling (Erweiterung)
+		Scheduling-Classes
+		Vergessen Sie bitte nicht zu definieren, was „completely-Fair“ bedeutet, siehe auch die Definition von perfect fairness im Artikel
+		
+		www.pi6.fernuni-hagen.de/downloads/OS/Scheduling/nvz-vtrrp-01.pdf
+		
+		Definieren Sie bitte auch „virtual runtime“
+	
+	3.2 Vergleich zum Vorgänger O(1) (hinsichtlich O-Notation,Arbeitsweise)
+	3.3 C-Strukturen / Darstellung der C-Strukturen in Verbindung mit dem Rot-Schwarz-Baum
+		Methoden zum Einfügen, Suchen, Löschen von Blättern -> graphische Simulation?
+		Tuning?
 
 	Literatur:
 
@@ -60,3 +64,4 @@ Entwurf für Gliederung
 		http://www.pi6.fernuni-hagen.de/downloads/OS/Scheduling/l-lkd-10.pdf
 
 4. Zusammenfassung
+5. Literaturverzeichnis
