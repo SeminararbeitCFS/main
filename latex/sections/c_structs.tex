@@ -1,0 +1,26 @@
+\subsection{Datenstrukturen in C}\label{s:cstructs}
+\begin{lstlisting}[language=C]
+struct sched_entity {
+struct load_weight load;
+struct rb_node run_node;
+struct list_head group_node;
+unsigned int on_rq;
+u64 exec_start;
+u64 sum_exec_runtime;
+u64 vruntime;
+u64 prev_sum_exec_runtime;
+u64 last_wakeup;
+u64 avg_overlap;
+u64 nr_migrations;
+u64 start_runtime;
+u64 avg_wakeup;
+/* many stat variables elided, enabled only if CONFIG_SCHEDSTATS is set */
+};
+\end{lstlisting}
+
+
+Time Accounting -> wie wird gemessen, gewichtet
+ProcessSelection -> einfügen in Baum, löschen, caching the leftmost node
+SchedulerEntryPooint -> wo wird CFS aufgerufen
+
+Sleeping and Waking Up nur rudimentär
