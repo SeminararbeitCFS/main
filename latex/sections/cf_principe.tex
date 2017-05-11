@@ -1,0 +1,43 @@
+\subsection{Das \glqq Completely-Fair\grqq{} Prinzip}
+Die wichtigste Aufgabe eines Schedulers ist die Verteilung von knappen Ressourcen unter Menge von Klienten. 
+Um dies zu realisieren, wurden bereits viele Anwendungen in Theorie und Praxis entwickelt.
+Eine sehr bekannte Entwicklung beruht auf der Idee, jedem Klienten ein eigenes Gewicht zu zuweisen, welche dann je nach Höhe zum Gebrauch der begrenzten Ressource berechtigt.
+
+Diese Verfahren, welches unter anderem unter dem Namen \glqq Proportional Share Scheduling\grqq{} bekannt ist, wurde bereits vor einigen Jahrzehnten entwickelt und fand dann z.B. in einem gewichtetem Round-Robin Verfahren Anwendung. Auch unter UNIX fand dieses Verfahren schnell als Scheduler Anwendung mit Hilfe einer Priorität-Steuerung. Dieses Verfahren ist schnell und benötigt immer eine konstante Zeit zum Auswählen des nächsten Klienten. 
+
+Die Proportional-Scheduler können die Verteilung der Ressource über zwei Wege erreichen:
+
+\begin{enumerate}
+	\item Über die Frequenz. Das heißt, wie oft bekommt ein Klient die Zuteilung. Dies wird realisiert mit Hilfe der passenden Positionen in der Warteschlange.
+	\item Über die Zeit. Dafür wird das Zeitquantum, welches einem Prozess zugeordnet wird, entsprechend verlängert oder verkürzt.
+\end{enumerate}
+
+Allerdings werden damit immer nur Klienten mit den höchsten Priorität bevorzugt und es können Klienten \glqq verhungern\grqq{}.
+Damit begann die Entwicklung der sogenannten \glqq Fair Scheduler\grqq{}. Diese sollen das Problem der ungleichmäßigen bzw. ungerechten Verteilung der Prioritätssteuerung beheben und somit eine \glqq faire\grqq{} Verteilung ermöglichen. 
+
+Eine Definition zur perfekten Fairness, welche die Grundlage der Fair-Scheduler bildet wird nach \cite{pdf Frau Ma} wie folgt definiert:
+
+\begin{equation}
+W_A(t_1,t_2) = (t_2 - t_1) \frac{S_A}{\sum_i S_i}
+\label{eq:perfect_fairness}
+\end{equation}
+
+Hierbei ist $S_A$ der proportionale Anteil des Klienten $A$, $S_i$ die Anteile aller aktiven Klienten und $W_A$ stellt als Ergebnis die Menge der erhaltenen Zuweisung des Klienten $A$ in der Zeit zwischen $t1$ und $t2$ dar.
+
+Im idealen System, wenn alle Klienten ihre Zuweisung gleichzeitig erhalten und ihren geforderten Ressourcenanspruch simultan verbrauchen könnten, wäre es möglich die obige Gleichung aufrecht zu erhalten.
+Damit wäre eine "completely-fair" Verteilung gegeben. Allerdings ist dies in der Praxis nicht möglich, da immer nur ein Klienten für die knappe Ressource die Zuteilung bekommen kann.
+Um eine Bewertung der aktuellen Strategie zur idealen "completely-fair" Strategie zu erhalten, kann ein "service time error" mit folgender Formel berechnet werden:
+
+\begin{equation}
+E_A(t_1,t_2) = W_A(t_1,t_2) - (t_2 - t_1) \frac{S_A}{\sum_i S_i}
+\label{eq:perfect_fairness}
+\end{equation}
+
+Diese Differenz gibt den Abstand vom gegebenen Algorithmus zum idealen Algorithmus an.
+Ist der Abstand positiv, so bekommt der aktuelle Klient mehr Zuteilung als er mit dem idealen Algorithmus bekommen würde. Ist der Abstand negative, so erhält der Klient entsprechend weniger.
+
+Ziel in einer praktischen Lösung im Bezug auf "completely fair" soll es sein, diesen Abstand zu minimieren.
+ 
+
+
+
