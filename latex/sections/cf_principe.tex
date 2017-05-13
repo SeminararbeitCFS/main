@@ -15,18 +15,20 @@ Die Proportional-Scheduler können die Verteilung der Ressource hauptsächlich �
 Wird die Scheduler-Logik mit Hilfe von Prioritäten gesteuert, entsteht schnell ein entscheidendes Problem. Die Klienten mit den höchsten Prioritäten werden bevorzugt und bei anderen Klienten mit niedrigeren Prioritäten kann der Fall auftreten, dass sie keine Zuteilung mehr bekommen und somit \glqq verhungern\grqq{}.
 Um diese Problematik zu umgehen, wurde mit der Entwicklung alternativer Scheduling Algorithmen begonnen. Ein wichtiges Ziel sollte sein, eine gewisse Fairness unter den Klienten zu erreichen. Damit erhielten diese Verfahren den Namen \glqq Fair Scheduler\grqq{}. Mit Hilfe dieser Art von Schedulern soll das Problem der ungleichmäßigen bzw. ungerechten Verteilung der Prioritätssteuerung behoben werden.
 
-Eine Definition zur perfekten Fairness, welche die Grundlage der Fair-Scheduler bildet wird nach \cite{usenix} wie folgt definiert:
+Eine perfekte Fairness kann nur gebildet werden, wenn die Klienten bewertet werden und aufgrund dieser Bewertung ihre Zuteilung auf die Ressource erhalten.
+Eine Möglichkeit für eine solche Bewertung ist ein Vergleich von verbrauchten Kontingent des Klienten zu Verbrauchten Kontingent aller aktiven Klienten in einem bestimmten Zeitraum. 
+Dies wird nach \cite{usenix} wie folgt definiert:
 
 \begin{equation}
 W_A(t_1,t_2) = (t_2 - t_1) \frac{S_A}{\sum_i S_i}
 \label{eq:perfect_fairness}
 \end{equation}
 
-Hierbei ist $S_A$ der proportionale Anteil des Klienten $A$, $S_i$ die Anteile aller aktiven Klienten und $W_A$ stellt als Ergebnis die Menge der erhaltenen Zuweisung des Klienten $A$ in der Zeit zwischen $t1$ und $t2$ dar.
+Hierbei ist $S_A$ der proportionale Anteil des Klienten $A$, $S_i$ die Anteile aller aktiven Klienten und $W_A$ stellt als Ergebnis eine proportionale Menge des Klienten in der Zeit zwischen $t1$ und $t2$ dar.
 
-Im idealen System, wenn alle Klienten ihre Zuweisung gleichzeitig erhalten und ihren geforderten Ressourcenanspruch simultan verbrauchen könnten, wäre es möglich die obige Gleichung aufrecht zu erhalten.
-Damit wäre eine "completely-fair" Verteilung gegeben. Allerdings ist dies in der Praxis nicht möglich, da immer nur ein Klienten für die knappe Ressource die Zuteilung bekommen kann.
-Um eine Bewertung der aktuellen Strategie zur idealen "completely-fair" Strategie zu erhalten, kann ein "service time error" mit folgender Formel berechnet werden:
+Im idealen System, wenn alle Klienten ihre Zuweisung gleichzeitig erhalten und ihren geforderten Ressourcenanspruch simultan verbrauchen könnten, wäre es möglich die obige Gleichung für alle Klienten entsprechend aufrecht zu erhalten.
+Damit wäre eine \glqq completely-fair\grqq{} Verteilung gegeben. Allerdings ist dies in der Praxis nicht möglich, da immer nur ein Klienten für die Ressource die Zuteilung bekommen kann.
+Um eine Bewertung der aktuellen angewendeten Strategie zur idealen \glqq completely-fair\grqq-Strategie zu erhalten, kann ein sogenannter \glqq service time error\grqq{} mit folgender Formel berechnet werden:
 
 \begin{equation}
 E_A(t_1,t_2) = W_A(t_1,t_2) - (t_2 - t_1) \frac{S_A}{\sum_i S_i}
@@ -34,9 +36,9 @@ E_A(t_1,t_2) = W_A(t_1,t_2) - (t_2 - t_1) \frac{S_A}{\sum_i S_i}
 \end{equation}
 
 Diese Differenz gibt den Abstand vom gegebenen Algorithmus zum idealen Algorithmus an.
-Ist der Abstand positiv, so bekommt der aktuelle Klient mehr Zuteilung als er mit dem idealen Algorithmus bekommen würde. Ist der Abstand negative, so erhält der Klient entsprechend weniger.
+Ist der Abstand positiv, so bekommt der aktuelle Klient mehr Zuteilung als er mit dem idealen Algorithmus bekommen würde. Ist der Abstand negativ, so erhält der Klient im Vergleich weniger.
 
-Ziel in einer praktischen Lösung im Bezug auf "completely fair" soll es sein, diesen Abstand zu minimieren.
+Ziel in einer praktischen Lösung im Bezug auf \glqq completely-fair\grqq{} soll es sein, diesen Abstand zu minimieren.
  
 
 
