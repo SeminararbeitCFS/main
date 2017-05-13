@@ -21,7 +21,7 @@ Ein Problem, welches bei dieser Anwendung zu Problemen führt, ist eine gegen un
 
 Eine weitere Unterscheidung zur Nutzung der NICE-Werte wird ebenfalls erreicht. Wurde zuvor der absolute NICE-Wert für eine Prioritätsermittlung benutzt, so spielt jetzt nur noch der relative Abstand zum nächsten NICE-Wert eine Rolle.
 
-Ein Beispiel von [\cite{vorschlag}] wäre ein Zustand mit 2 Prozessen. Ein Zustand hat den NICE-Wert 0, der andere den NICE-Wert 5. Damit würde sich eine Prozessorzuteilzeit von 15ms für den Prozess mit NICE = 0 und eine Zuteilzeit von 5ms für den Prozess mit NICE = 5 ergeben.
+Ein Beispiel von [\cite{rlove}] wäre ein Zustand mit 2 Prozessen. Ein Zustand hat den NICE-Wert 0, der andere den NICE-Wert 5. Damit würde sich eine Prozessorzuteilzeit von 15ms für den Prozess mit NICE = 0 und eine Zuteilzeit von 5ms für den Prozess mit NICE = 5 ergeben.
 Im Vergleich dazu hätte man dann einen weiteren Zustand mit wiederum 2 Prozessen, aber dieses mal mit den NICE-Werten 10 und 15. Hier würde das selbe Ergebnis mit 15ms und 5ms zustande kommen. Damit wird gezeigt, dass die Höhe des NICE-Wertes nur noch die geometrische Differenz ändert.
 
 Anhand dieser Erläuterung kann gesehen werden, dass der CF-Scheduler nur eine Annäherung an ein perfektes faires Scheduling erreicht. Das große Problem der CF-Scheduler ist eine übermäßige Menge an Prozessen. Wird diese Menge in einem gewissen Rahmen gehalten, so kann der CF-Scheduler das \glqq completely-fair\grqq -Prinzip gut erreichen. 

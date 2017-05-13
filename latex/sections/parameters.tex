@@ -1,4 +1,4 @@
-\subsection{Parameter der Linux Scheduler}
+\subsection{wichtige Parameter der Linux Scheduler}
 \subsubsection{Prozessarten}
 In der Prozessverwaltung des Schedulers sollen insbesondere zwei Hauptprozessarten berücksichtigt werden. Zum einen gibt es I/O gebundene Prozesse. Diese Prozesse warten stehts auf Eingaben bzw. Ereignisse und führen danach entsprechend Code aus. Daher kann man davon ausgehen, dass die Prozesse immer nur relative kurzläufig sind und sich danach im Wartemodus befinden. Als Beispiel sei z.B. eine GUI zu nennen, welche nur durch Interaktionen eines Users arbeiten kann.
 Die zweite Prozessart, welche vom Scheduler behandelt werden muss, sind die Prozessor gebundenen Prozesse. Diese Prozesse sind hauptsächlich damit beschäftigt, Algorithmen auszuführen und daher be\-nötigen sie sehr viel Prozessorzeit. Ausserdem laufen diese Prozesse meist solange, bis sie unterbrochen werden.

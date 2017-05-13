@@ -1,21 +1,21 @@
 \subsection{Das \glqq Completely-Fair\grqq{} Prinzip}\label{s:fair}
-Die wichtigste Aufgabe eines Schedulers ist die Verteilung von knappen Ressourcen unter Menge von Klienten. 
+Die wichtigste Aufgabe eines Schedulers ist die Verteilung von knappen Ressourcen unter einer Menge von Klienten. 
 Um dies zu realisieren, wurden bereits viele Anwendungen in Theorie und Praxis entwickelt.
 Eine sehr bekannte Entwicklung beruht auf der Idee, jedem Klienten ein eigenes Gewicht zu zuweisen, welche dann je nach Höhe zum Gebrauch der begrenzten Ressource berechtigt.
 
-Diese Verfahren, welches unter anderem unter dem Namen \glqq Proportional Share Scheduling\grqq{} bekannt ist, wurde bereits vor einigen Jahrzehnten entwickelt und fand dann z.B. in einem gewichtetem Round-Robin Verfahren Anwendung. Auch unter UNIX fand dieses Verfahren schnell als Scheduler Anwendung mit Hilfe einer Priorität-Steuerung. Dieses Verfahren ist schnell und benötigt immer eine konstante Zeit zum Auswählen des nächsten Klienten. 
+Diese Verfahren, welches unter anderem unter dem Namen \glqq Proportional Share Scheduling\grqq{} bekannt sind, wurden bereits vor einigen Jahrzehnten entwickelt und fanden dann z.B. in einem gewichtetem Round-Robin Verfahren Anwendung. Auch unter UNIX fand dieses Verfahren schnell als Scheduler Anwendung mit Hilfe einer Priorität-Steuer\-ung. Dieses Verfahren ist schnell und benötigt immer eine konstante Zeit zum Auswählen des nächsten Klienten. 
 
-Die Proportional-Scheduler können die Verteilung der Ressource über zwei Wege erreichen:
+Die Proportional-Scheduler können die Verteilung der Ressource hauptsächlich über zwei Wege erreichen:
 
 \begin{enumerate}
-	\item Über die Frequenz. Das heißt, wie oft bekommt ein Klient die Zuteilung. Dies wird realisiert mit Hilfe der passenden Positionen in der Warteschlange.
-	\item Über die Zeit. Dafür wird das Zeitquantum, welches einem Prozess zugeordnet wird, entsprechend verlängert oder verkürzt.
+	\item Über die Frequenz. Das heißt, wie oft bekommt ein Klient die Zuteilung. Dies kann zum Beispiel realisiert werden, mit einer entsprechenden Positionierung in einer Warteschlange.
+	\item Über die Zeit. Dafür wird das Zeitquantum, welches einem Klienten zur Verfügung gestellt wird, entsprechend verlängert oder verkürzt.
 \end{enumerate}
 
-Allerdings werden damit immer nur Klienten mit den höchsten Priorität bevorzugt und es können Klienten \glqq verhungern\grqq{}.
-Damit begann die Entwicklung der sogenannten \glqq Fair Scheduler\grqq{}. Diese sollen das Problem der ungleichmäßigen bzw. ungerechten Verteilung der Prioritätssteuerung beheben und somit eine \glqq faire\grqq{} Verteilung ermöglichen. 
+Wird die Scheduler-Logik mit Hilfe von Prioritäten gesteuert, entsteht schnell ein entscheidendes Problem. Die Klienten mit den höchsten Prioritäten werden bevorzugt und bei anderen Klienten mit niedrigeren Prioritäten kann der Fall auftreten, dass sie keine Zuteilung mehr bekommen und somit \glqq verhungern\grqq{}.
+Um diese Problematik zu umgehen, wurde mit der Entwicklung alternativer Scheduling Algorithmen begonnen. Ein wichtiges Ziel sollte sein, eine gewisse Fairness unter den Klienten zu erreichen. Damit erhielten diese Verfahren den Namen \glqq Fair Scheduler\grqq{}. Mit Hilfe dieser Art von Schedulern soll das Problem der ungleichmäßigen bzw. ungerechten Verteilung der Prioritätssteuerung behoben werden.
 
-Eine Definition zur perfekten Fairness, welche die Grundlage der Fair-Scheduler bildet wird nach \cite{pdf Frau Ma} wie folgt definiert:
+Eine Definition zur perfekten Fairness, welche die Grundlage der Fair-Scheduler bildet wird nach \cite{usenix} wie folgt definiert:
 
 \begin{equation}
 W_A(t_1,t_2) = (t_2 - t_1) \frac{S_A}{\sum_i S_i}
