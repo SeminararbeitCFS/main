@@ -1,0 +1,34 @@
+%<kernel/sched_fair.c>
+
+
+static void update_curr(struct cfs_rq *cfs_rq)
+{
+	struct sched_entity *curr = cfs_rq->curr;
+	u64 now = rq_of(cfs_rq)->clock_task;
+	unsigned long delta_exec;
+
+	if (unlikely(!curr))
+		return;
+
+	/*
+	 * Get the amount of time the current task was running
+	 * since the last time we changed load (this cannot
+	 * overflow on 32 bits):
+	 */
+	delta_exec = (unsigned long)(now - curr->exec_start);
+	if (!delta_exec)
+		return;
+
+	__update_curr(cfs_rq, curr, delta_exec);
+	curr->exec_start = now;
+
+	if (entity_is_task(curr)) {
+		struct task_struct *curtask = task_of(curr);
+
+		trace_sched_stat_runtime(curtask, delta_exec, curr->vruntime);
+		cpuacct_charge(curtask, delta_exec);
+		account_group_exec_runtime(curtask, delta_exec);
+	}
+
+	account_cfs_rq_runtime(cfs_rq, delta_exec);
+}
