@@ -1,26 +1,31 @@
-\subsection{Datenstrukturen in C}\label{s:cstructs}
-\begin{lstlisting}[language=C]
-struct sched_entity {
-struct load_weight load;
-struct rb_node run_node;
-struct list_head group_node;
-unsigned int on_rq;
-u64 exec_start;
-u64 sum_exec_runtime;
-u64 vruntime;
-u64 prev_sum_exec_runtime;
-u64 last_wakeup;
-u64 avg_overlap;
-u64 nr_migrations;
-u64 start_runtime;
-u64 avg_wakeup;
-/* many stat variables elided, enabled only if CONFIG_SCHEDSTATS is set */
-};
-\end{lstlisting}
+\subsection{Datenstrukturen \& Funktionen in C}\label{s:cstructs}
+Im folgenden Abschnitt werden Datenstrukturen und Funktionen aus dem Linux-Kernel vorgestellt, die für Sche"-duling-Aktivitäten des CFS genutzt werden. Dies umfasst die gewichtete Berechnung der genutzten Prozessorzeit, Prozessselektion (Einfügen, Löschen und Auswahl eines Prozesses) und einer kurzen Vorstellung der generischen Sche"-duler-Klasse (\textit{Scheduler-Entry-Point}), aus welcher der CFS aufgerufen wird. Die Erläuterungen folgen den Diskussionen aus \cite{rlove}.
 
+Wie in Kapitel \ref{s:cfs_fktweise} erläutert, ordnet der CFS jedem Prozess eine gewichtete Prozessorzeit zu. In der Datenstruktur \texttt{sched\_entity} (eingebettet in der struct für Prozessdeskriptor \texttt{task\_struct}) ist dies die Variable \texttt{vruntime} (Zeile 8). Die \textit{virtual runtime} eines Prozesses ist die Zeit, die ein Prozess in Ausführung war, gewichtet oder normalisiert mit Hilfe des nice-Wertes anhand der Gesamtanzahl von Prozessen. \texttt{vruntime} wird in Nanosekunden angeben und ist somit losgelöst von der Frequenz des System-Timers. CFS nutzt genau diesen Wert um das ``completely fair'' Prinzip anzuwenden, also um zu messen wie lange ein Prozess gelaufen ist und somit wie viel länger er laufen sollte. \\
+Der Wert für die \textit{virtual runtime} ist gleichzeitig der Schlüssel im gewichteten Rot-Schwarz-Baum, der alle lauffähigen Prozesse beinhaltet. Daher beinhaltet \texttt{sched\_entity} auch eine Referenz auf den Rot-Schwarz-Baum in dem sich der lauffähige Prozess befindet (Zeile 3).
+\lstinputlisting
+[caption={Struct sched\_entity aus \textless linux/sched.h \textgreater}]
+{listings/sched_entity.lst}
 
-Time Accounting -> wie wird gemessen, gewichtet
-ProcessSelection -> einfügen in Baum, löschen, caching the leftmost node
-SchedulerEntryPooint -> wo wird CFS aufgerufen
+Die Funktion welche genutzt wird, um die  \texttt{virtual \- runtime} stets aktuell zu halten ist \texttt{update\_curr()} aus \texttt{kernel/sched\_fair.c}. Diese berechnet die Aus"-führungszeit des aktuellen Prozesses und speichert den Wert in der Variablen \texttt{delta\_exec}, welche wiederum an die unten aufgeführte Unterfunktion \texttt{\_\_update\_curr()} über"-geben wird. Diese ist dafür zuständig den Wert von \texttt{delta\-\_exec} mit der Anzahl an laufenden Prozessen zu gewichten. Die \texttt{vruntime} des aktuellen Prozesses wird um diesen Wert inkrementiert (Zeile 12). Ein immer präziser Wert für die \textit{virtual runtime} wird erreicht, weil diese Funktion sowohl periodisch durch den Systemtimer als auch jedes Mal wenn ein Prozess blockiert, ausführbar oder nicht mehr lauffähig wird, aufgerufen wird. 
+\lstinputlisting
+ [caption={Funktion \_\_update\_curr aus \textless kernel/sched\_fair.c \textgreater}]
+{listings/__update_curr.lst}
 
-Sleeping and Waking Up nur rudimentär
+Anhand der Diskussion in Kapitel \ref{s:cfs_fktweise} über ideale, perfekte Multitasking-Prozessoren lässt sich herleiten, dass die \textit{virtual runtime} in diesem Szenario für jeden Prozess gleich wäre. In der Realität hingegen muss der CFS immer wieder einen neuen Prozess für die Ausführung aus dem Baum auswählen. Um die Fairness zu wahren, wählt er dafür immer den Prozess mit dem niedrigsten Wert für \texttt{vruntime}. Dieser Prozess ist im Rot-Schwarz-Baum der Knoten ganz links. In Kernel-Code ist dafür die Funktion \texttt{\_\_pick\_next\_entity} verwantwortlich. Beim Analysieren des Listings fällt auf, dass der Rot-Schwarz-Baum nicht tatsächlich traversiert wird, da ein zwischengespeicherter Wert \texttt{rb\_leftmost} existiert (referenziert in Zeile 3). Auch wenn es mit einem Aufwand von O(log n) (bei n Knoten) effizient wäre den Baum zu durchsuchen, ist es noch einfacher und schneller einen zwischengespeicherten Wert direkt zu adressieren. Wenn der Rot-Schwarz-Baum nicht leer ist und somit keine lauffähigen Prozesse vorhanden sind, gibt die Funktion den Prozess zurück, den CFS als nächstes ausführen wird.
+\lstinputlisting
+[caption={Funktion \_\_pick\_next\_entity aus \textless kernel/sched\_fair.c \textgreater}]
+{listings/__pick_next_entity.lst}
+
+Wenn ein Prozess seinen Zustand in Ausführbar ändert (oder erstmalig durch \texttt{fork()} erstellt wird) muss dieser durch den CFS dem Rot-Schwarz-Baum hinzugefügt werden. Im gleichen Schritt wird auch der Knoten ganz links (kleinste \texttt{vruntime}) zwischengespeichert. Dies geschieht analog wie beim Aktualisieren der \textit{virtual runtime} in einer Unterfunktion von \texttt{enqueue\_entitiy()}. Der Inhalt der \texttt{while()}-Schleife (ab Zeile 11) führt den Vergleich des Schlüssels des neuen Prozesses mit den Schlüsseln der Kinder durch. Beendet wird dies, sobald ein Knoten gefunden ist, der kein Kind in der Richtung besitzt in die der neue Prozess weiter \textit{wandern} würde. Sobald der neue Prozess im Baum einmal nach rechts \textit{gewandert} ist, kann es de facto nicht mehr der Knoten ganz links sein und die Statusvariable \texttt{leftmost} wird genullt. Wenn der neue Prozess ausschließlich nach links wandert, bleibt diese Statusvariable eins und \texttt{rb\_leftmost} wird aktualisiert. Abschließend wird der neue Prozess als Kind im Baum eingehängt und darauf folgend die Eigenschaften entgegen eines Ungleichgewichtes aktualisiert.
+\lstinputlisting
+[caption={Funktion \_\_enqueue\_entity aus \textless kernel/sched\_fair.c \textgreater}]
+{listings/__enqueue_entity.lst}
+
+Analog dem Einfügen eines neuen Prozesses in den Baum, gibt es Ereignisse die ein Löschen eines Prozesses aus dem Baum erfordern. Dies geschieht üblicherweise wenn ein Prozess blockiert oder terminiert. Auch hier wird in der Funktion \texttt{dequeue\_entity()} eine Unterfunktion aufgerufen, welche die eigentliche Aktion durchführt. Jedoch fällt hier auf, dass die Unterfunktion sehr simpel aufgebaut ist, da die Bibliothek der Rot-Schwarz-Baum Implementierung in C bereits eine Funktion \texttt{rb\_erase()} mitbringt, welche die nötigen Operationen durchführt. Wichtig ist aber auch beim Entfernen eines Prozesses, dass der Zwischenspeicher für den linkesten Knoten aktualisiert wird. Falls dies genau der Prozess ist, der entfernt werden soll, muss natürlich mit einem Aufruf von \texttt{rb\_next()} der nächste Prozess zur Ausführung ausgewählt werden. 
+\lstinputlisting
+[caption={Funktion \_\_dequeue\_entity aus \textless kernel/sched\_fair.c \textgreater}]
+{listings/__dequeue_entity.lst} 
+
+%SchedulerEntryPooint - \textgreater wo wird CFS aufgerufen
+%Sleeping and Waking Up nur rudimentär

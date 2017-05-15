@@ -11,7 +11,22 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx}
+\usepackage{color}
 \usepackage{listings}
+\lstset{
+  frame=trb,
+  language=C,
+  basicstyle=\small,
+  breaklines=true, 
+  numbers=left,              
+  stepnumber=1,                     
+  numberfirstline=false,
+  tabsize=2,
+  commentstyle=\color{magenta}, 
+  keywordstyle=\color{blue},
+  stringstyle=\color{red}
+}
+
 
 \begin{document}
 
@@ -28,24 +43,28 @@
 
 \maketitle
 
-\abstract{Die Geschichte der Gummi\-bär\-chen ist voller
-Über\-raschun\-gen\ldots} % Trennhilfe \- manchmal nützlich
+\abstract{ tbd. } % Trennhilfe \- manchmal nützlich
 
 \keywords{Linux, CFS, Rot-Schwarz-Baum, Scheduling, completely fair}
 
 % Section-Überschriften werden in GROSSBUCHSTABEN umgestellt
 \section{Einleitung}
-
-%Das Gummibärchen war schon immer ein Quell der Freude für Jung
-%und Alt, vgl. \cite{mingo,mjones}.
+TODO am Ende: hier folgen einleitende worte, woher der cfs kommt, seit wann im kernel, was das ziel dieses papers ist, was abgegrenzt wird,
 
 \section{Grundlagen zum Scheduling}
+In diesem Abschnitt wird der Begriff Scheduling im Allgemeinen und konkret im Bezug auf Prozess-Scheduling definiert und anhand von Beispielen exemplarisch konkretisiert. 
+Darauf folgend werden die Kriterien wiederholt, die durch effizientes Scheduling optimiert werden.
+Ebenso erfolgt eine Einführung in die Datenstruktur \textit{Rot-Schwarz-Baum} sowie dem \textit{completely fair} Prinzip.
+
 \input{sections/scheduling}
+\input{sections/parameters}
 \input{sections/rb_tree}
 \input{sections/cf_principe}
-\input{sections/parameters}
+
 
 \section{Der Completely-Fair-Scheduler}\label{s:cfsmain}
+Ziel dieses Abschnittes ist es, dem Leser ein grundlegendes Verständnis für die Funktionsweise des CFS zu vermitteln. Es wird konkretisiert, wie dieser Scheduler einen perfekten Multitasking-Prozessor approximiert und welche Datenstrukturen und Funktionen dafür in der Programmiersprache C im Linux-Kernel implementiert sind.
+
 \input{sections/aufbau}
 \input{sections/c_structs}
 \input{sections/comp_to_O1}
