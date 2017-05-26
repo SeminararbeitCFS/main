@@ -20,22 +20,22 @@ Eine Möglichkeit für eine solche Bewertung ist ein Vergleich von verbrauchten 
 Dies wird nach \cite{usenix} wie folgt definiert:
 
 \begin{equation}
-W_A(t_1,t_2) = (t_2 - t_1) \frac{S_A}{\sum_i S_i}
+W_{o,A}(t_1,t_2) = (t_2 - t_1) \frac{S_A}{\sum_i S_i}
 \label{eq:perfect_fairness}
 \end{equation}
 
-Hierbei ist $S_A$ der proportionale Anteil des Klienten $A$, $S_i$ die Anteile aller aktiven Klienten und $W_A$ stellt als Ergebnis eine proportionale Menge des Klienten in der Zeit zwischen $t1$ und $t2$ dar.
+Hierbei ist $S_A$ der proportionale Anteil des Klienten $A$, $S_i$ die Anteile aller aktiven Klienten und $W_{o,A}$ stellt als Ergebnis eine optimale proportionale Menge des Klienten in der Zeit zwischen $t1$ und $t2$ dar.
 
 Im idealen System, wenn alle Klienten ihre Zuweisung gleichzeitig erhalten und ihren geforderten Ressourcenanspruch simultan verbrauchen könnten, wäre es möglich die obige Gleichung für alle Klienten entsprechend aufrecht zu erhalten.
 Damit wäre eine \glqq completely-fair\grqq{} Verteilung gegeben. Allerdings ist dies in der Praxis nicht möglich, da immer nur ein Klienten für die Ressource die Zuteilung bekommen kann.
 Um eine Bewertung der aktuellen angewendeten Strategie zur idealen \glqq completely-fair\grqq-Strategie zu erhalten, kann ein sogenannter \glqq service time error\grqq{} mit folgender Formel berechnet werden:
 
 \begin{equation}
-E_A(t_1,t_2) = W_A(t_1,t_2) - (t_2 - t_1) \frac{S_A}{\sum_i S_i}
+E_A(t_1,t_2) = W_{S,A}(t_1,t_2) - W_{o,A}(t_1,t_2)
 \label{eq:perfect_fairness}
 \end{equation}
 
-Diese Differenz gibt den Abstand vom gegebenen Algorithmus zum idealen Algorithmus an.
+Diese Differenz gibt den Abstand vom gegebenen Algorithmus bzw. der aktuellen Strategie zum optimalen Algorithmus an.
 Ist der Abstand positiv, so bekommt der aktuelle Klient mehr Zuteilung als er mit dem idealen Algorithmus bekommen würde. Ist der Abstand negativ, so erhält der Klient im Vergleich weniger.
 
 Ziel in einer praktischen Lösung im Bezug auf \glqq completely-fair\grqq{} soll es sein, diesen Abstand zu minimieren.

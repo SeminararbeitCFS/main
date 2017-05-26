@@ -1,27 +1,42 @@
 \subsection{Funktionsweise}\label{s:cfs_fktweise}
-Das Ziel eines  Completely-Fair-Schedulers{} soll es sein, eine gute Annäherung an das Verhalten eines perfekten Multitasking-Prozessor zu errreichen.
+%Das Ziel eines  Completely-Fair-Schedulers{} soll es sein, eine gute Annäherung an das Verhalten eines perfekten Multitasking-Prozessor zu errreichen.
+Das Ziel eines  Completely-Fair-Schedulers{} soll es sein, eine faire Aufteilung der Ressource Prozessor unter einer Menge von ausführbaren Prozessen zu erreichen.
 
-Ein perfekter Multi\-tasking-Prozessor würde jedem Prozess immer ein perfektes $1/n$ Verhältnis zuweisen, wobei $n$ die Menge aller Prozesse darstellt. 
-Bei nur zwei laufenden Prozessen heißt das, dass beide Prozesse zeitgleich mit jeweils 50 Prozent der Prozessorressource arbeiten dürfen. Dies ist in der Praxis allerdings nicht möglich, da jeder Prozessor immer nur eine Aufgabe zu einem Zeitpunkt bearbeiten kann.
+%Ein perfekter Multi\-tasking-Prozessor würde jedem Prozess immer ein perfektes $1/n$ Verhältnis zuweisen, wobei $n$ die Menge aller Prozesse darstellt."
+Im einfachsten Fall, wenn keine Prioritäten unter den Prozessen vergeben werden, ist eine perfekte Aufteilung der Ressource gegeben, wenn zu jedem Zeitpunkt jeder Prozess immer eine Zuteilung im Verhältnis $1/n$ erhält, wobei $n$ die Menge aller Prozesse darstellt.
+Bei zwei laufenden Prozessen hieße das, dass beide Prozesse zeitgleich mit jeweils 50 Prozent der Prozessorressource arbeiten dürfen. Dies ist in der Praxis allerdings nicht möglich, da jeder Prozessor immer nur eine Aufgabe zu einem Zeitpunkt bearbeiten kann.
 
-Unter Linux und UNIX-artigen System werden den beiden Prozessen jeweils Zeitscheiben zugeordnet, und es findet eine sequentielle Abarbeitung statt. In diesem Fall werden die Prozesse abwechselnd mit jeweils 100 Prozent Prozessorzuteilung abgearbeitet.
+Unter Linux und UNIX-artigen System werden daher den beiden Prozessen jeweils Zeitscheiben zugeordnet, und es findet eine sequentielle Abarbeitung statt. In diesem Fall werden die Prozesse abwechselnd mit jeweils 100 Prozent Prozessorzuteilung abgearbeitet.
 
-Um mit diesem Prinzip eine Annäherung an einen perfekten Multitasking-Prozessor zu erreichen, müsste man die Zuteilung für jeden Prozess in unendlich kleine Zeitscheiben zerlegen und alternierend dem Prozessor zuweisen. Würde man an dieser Stelle eine Messung der Zuteilung durchführen, sähe es tatsächlich so aus, als würde alle Prozesse ihre benötigte Zeit gleichmäßig verbrauchen.
-Allerdings hat diese Methode eine erheblichen Nachteil. Ein einziger Umschalt\-vorgang be\-nötigt selbst z.B. durch Ein- und Auslagerung der verschieden Daten im Speicher, wieder einen großen Teil der Prozessorleistung. Dadurch würde ein sehr schlechtes Verwaltungs- zu Verarbeitungsverhältnis entstehen und damit wäre der Scheduler sehr uneffizient.
+%Um mit diesem Prinzip eine Annäherung an einen perfekten Multitasking-Prozessor zu erreichen, müsste man die Zuteilung für jeden Prozess in unendlich kleine Zeitscheiben zerlegen und alternierend dem Prozessor zuweisen.
+Je kleiner diese Zeitscheiben gewählt werden, desto mehr wird ein nahezu gleichzeitiges Abarbeiten der anstehenden Prozesse erreicht.
+Würde man zu einer beliebigen Zeit eine Messung der Zuteilungen der Prozesse durchführen, sähe es tatsächlich so aus, als würden alle Prozesse ihr Quantum gleichzeitig verbrauchen.
+Allerdings hat diese Methode eine erheblichen Nachteil. Ein einziger Umschalt\-vorgang be\-nötigt selbst z.B. durch Ein- und Auslagerung der verschieden Daten im Speicher, wieder einen großen Teil der Prozessorleistung. Dadurch würde ein sehr schlechtes Verwaltungs- zu Verarbeitungsverhältnis entstehen und damit wäre der Scheduler sehr uneffizient. Damit es nicht zu dieser Problematik beim CF-Scheduler kommen kann, wird eine minimale Zeitscheibe festgelegt. Diese minimal Zeitscheibe wird im Kernel als \textit{sysctl\-\_sched\-\_min\-\_granularity} bezeichnet \cite{paperfairness}.
+Somit wird an dieser Stelle sichergestellt, das der Verwaltungsaufwand zum Umschalten der Prozesse die Bearbeitungszeit der Prozesse im Prozessor nicht übersteigt.
 
-Mit dem CF-Scheduler muss nun eine Umgebung geschaffen werden, welche stark an der des idealen Multitasking-Prozessor anlehnt und wiederum aber auch eine Effiziente Methode zur Ausnutzung der Prozessorzuteilung anbietet.
-Anders als bei den prioritätsbestimmten Scheduler, welche über Zeitscheiben und Warteschlangen die Prioritäten verwalten, berechnet der CF-Scheduler die Zuteilung im Bezug zu allen anderen Prozessen welche sich im Wartemodus befinden. Der  \textit{nice}-Wert, welcher in bereits in älteren Scheduler\-ver\-fahren für die Erstellung der Zeitscheiben zuständig war, wird jetzt verwendet, um den Prozessen ein Gewicht zuzuordnen. Ist der  \textit{nice}-Wert hoch, was eine niedrige Priorität bedeutet, so bekommt der Prozess auch ein niedriges Gewicht zugeteilt. Andersherum bekommt der Prozess ein hohes Gewicht, wenn der  \textit{nice}-Wert niedrig ist.
 
-Mit Hilfe dieses Gewichtes wird dann das  Completely-Fair-Prinzip [s. Kapitel \ref{s:fair}] angewendet. Jeder Prozess erhält eine Zeitscheibe, welche proportional zum eigenen Gewicht im Verhältnis zu den Gewichten aller Prozesse ist. Die Wahl des nächstes Prozesses fällt immer auf den Prozess, welcher bis zu diesem Zeitpunkt die geringste Zuteilung des Prozessors erhalten hat.
-Zur Berechnung einer Zeitscheibe, setzt der CF-Scheduler eine sogenannte „targeted latency“. Diese stellt einen Richtwert für die verfügbare Zeit aller anstehenden Prozesse dar, welcher äquivalent im perfekten Multitasking erreicht würde.
+%Mit dem CF-Scheduler muss nun eine Umgebung geschaffen werden, welche stark an der des idealen Multitasking-Prozessor anlehnt und wiederum aber auch die Effizienz zur Ausnutzung der Prozessorressource in einen akzeptablen Bereich bewegt.
+Anders als bei den prioritäts\-bestim\-mten Scheduler, welche über Zeitscheiben und Warte\-schlan\-gen die Prioritäten verwalten, berechnet der CF-Scheduler die Zuteilung im Bezug zu allen anderen Prozessen welche sich in der entsprechenden Warteschlange befinden. Der  \textit{nice}-Wert, welcher bereits in älteren Scheduler\-ver\-fahren für die Erstellung der Zeitscheiben zuständig war, wird jetzt verwendet, um den Prozessen ein Gewicht zuzuordnen. Ist der  \textit{nice}-Wert hoch, was eine niedrige Priorität bedeutet, so bekommt der Prozess auch ein niedriges Gewicht zugeteilt. Andersherum bekommt der Prozess ein hohes Gewicht, wenn der  \textit{nice}-Wert niedrig ist.
 
-Wenn zum Beispiel eine „targeted latency“ von 20ms errechnet wird und zwei Prozesse mit dem gleichen  \textit{nice}-Wert in der Warteschlange stehen, wird jedem Prozess eine Zuteilung von 10ms gewährt.
+Mit Hilfe dieses Gewichtes wird dann das  Completely-Fair-Prinzip [s. Kapitel \ref{s:fair}] angewendet. 
 
-Ein Problem ergibt sich bei dieser Anwendung, wenn die Anzahl der wartenden Prozesse gegen unendlich läuft. Damit würde die zugewiesene Zeit gegen Null laufen und es würde kein Prozess mehr die Berechtigung einer Zuteilung erhalten. Um dieses Problem zu umgehen, wird eine minimale Granulität eingeführt ,welche normalerweise mit einer Millisekunde gewählt wird. Das heißt jeder Prozess erhält immer mindestens eine Zuteilung von einer Millisekunde, egal wie groß die Menge der anstehenden Prozesse zu diesem Zeitpunkt ist. Dadurch wird allerdings das „faire“ Verhalten des Schedulers beeinträchtigt. 
+Zunächst wird mit Hilfe des ermittelten Gewichtes und einer vorgegebenen Periode, für welche die Zuteilung der Prozesse ermittelt werden soll, für jeden Prozess eine ideale Zeitscheibe errechnet. Dies geschieht nach \cite{paperfairness} mit folgender Formel:
+\begin{equation}
+slice = \frac{se->load.weight}{cfs\_rq->load.weight} * period
+\label{eq:slice}
+\end{equation}
 
-Auch findet eine weitere Unterscheidung zur Nutzung der  \textit{nice}-Wert statt. Wurde zuvor der absolute  \textit{nice}-Wert für eine Prioritätsermittlung benutzt, so spielt jetzt nur noch der relative Abstand zum nächsten  \textit{nice}-Wert eine Rolle.
 
-Ein passendes Beispiel ist in \cite{rlove} illustriert. Gegeben ist ein Zustand mit zwei Prozessen. Ein Prozess hat den  \textit{nice}-Wert 0, der andere den  \textit{nice}-Wert 5. Damit würde sich eine Prozessorzuteilzeit von 15ms für den Prozess mit  \textit{nice}-Wert 0 und eine Zuteilzeit von 5ms für den Prozess mit  \textit{nice}-Wert 5 ergeben.
-Im Vergleich dazu hätte man einen weiteren Zustand mit wiederum 2 Prozessen, aber dieses mal mit den  \textit{nice}-Werten 10 und 15. Hier würde das selbe Ergebnis mit 15ms und 5ms zustande kommen. Damit wird gezeigt, dass die Höhe des  \textit{nice}-Wertes nur noch die geometrische Differenz ändert.
+%Jeder Prozess er\-hält eine Zeitscheibe, welche proportional zum eigenen Gewicht im Verhältnis zu den Gewichten aller Prozesse ist. Die Wahl des nächstes Prozesses fällt immer auf den Prozess, welcher bis zu diesem Zeitpunkt die geringste Zuteilung des Prozessors erhalten hat.
+%Zur Berechnung einer Zeitscheibe, setzt der CF-Scheduler eine sogenannte „targeted latency“. Diese stellt einen Richtwert für die verfügbare Zeit aller anstehenden Prozesse dar, welcher äquivalent im perfekten Multitasking erreicht würde.
 
-Anhand dieser Erläuterung kann gesehen werden, dass der CF-Scheduler nur eine Annäherung an ein perfektes faires Scheduling erreicht. Das große Problem der CF-Scheduler ist eine übermäßige Menge an Prozessen. Wird diese Menge in einem gewissen Rahmen gehalten, so kann der CF-Scheduler das  completely-fair -Prinzip gut erreichen. 
+%Wenn zum Beispiel eine „targeted latency“ von 20ms errechnet wird und zwei Prozesse mit dem gleichen  \textit{nice}-Wert in der Warteschlange stehen, wird jedem Prozess eine Zuteilung von 10ms gewährt.
+
+%Ein Problem ergibt sich bei dieser Anwendung, wenn die Anzahl der wartenden Prozesse gegen unendlich läuft. Damit würde die zugewiesene Zeit gegen Null laufen und es würde kein Prozess mehr die Berechtigung einer Zuteilung erhalten. Um dieses Problem zu umgehen, wird eine minimale Granulität eingeführt ,welche normalerweise mit einer Millisekunde gewählt wird. Das heißt jeder Prozess erhält immer mindestens eine Zuteilung von einer Millisekunde, egal wie groß die Menge der anstehenden Prozesse zu diesem Zeitpunkt ist. Dadurch wird allerdings das „faire“ Verhalten des Schedulers beeinträchtigt. 
+
+%Auch findet eine weitere Unterscheidung zur Nutzung der  \textit{nice}-Wert statt. Wurde zuvor der absolute  \textit{nice}-Wert für eine Prioritätsermittlung benutzt, so spielt jetzt nur noch der relative Abstand zum nächsten  \textit{nice}-Wert eine Rolle.
+
+%Ein passendes Beispiel ist in \cite{rlove} illustriert. Gegeben ist ein Zustand mit zwei Prozessen. Ein Prozess hat den  \textit{nice}-Wert 0, der andere den  \textit{nice}-Wert 5. Damit würde sich eine Prozessorzuteilzeit von 15ms für den Prozess mit  \textit{nice}-Wert 0 und eine Zuteilzeit von 5ms für den Prozess mit  \textit{nice}-Wert 5 ergeben.
+%Im Vergleich dazu hätte man einen weiteren Zustand mit wiederum 2 Prozessen, aber dieses mal mit den  \textit{nice}-Werten 10 und 15. Hier würde das selbe Ergebnis mit 15ms und 5ms zustande kommen. Damit wird gezeigt, dass die Höhe des  \textit{nice}-Wertes nur noch die geometrische Differenz ändert.
+
+%Anhand dieser Erläuterung kann gesehen werden, dass der CF-Scheduler nur eine Annäherung an ein perfektes faires Scheduling erreicht. Das große Problem der CF-Scheduler ist eine übermäßige Menge an Prozessen. Wird diese Menge in einem gewissen Rahmen gehalten, so kann der CF-Scheduler das  completely-fair -Prinzip gut erreichen. 
