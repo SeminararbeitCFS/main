@@ -1,4 +1,19 @@
 \subsection{Implementierung im Linux-Kernel}\label{s:cstructs}
+\cite{mjones}:
+\begin{quote}
+\textit{To determine the balance, the CFS maintains the amount of time provided to a given task in what's called the virtual runtime. The smaller a task's virtual runtime—meaning the smaller amount of time a task has been permitted access to the processor—the higher its need for the processor. The CFS also includes the concept of sleeper fairness to ensure that tasks that are not currently runnable (for example, waiting for I/O) receive a comparable share of the processor when they eventually need it. }
+\end{quote}
+\cite{rlove}:
+\begin{quote}
+\textit{virtual runtime of a process, which is the actual runtime
+(the amount of time spent running) normalized (or weighted) by the number of runnable
+processes.}
+\end{quote}
+vruntime hier schon grob definiert, hier nochmal feiner mit zitat, dann überleitung zu wo ist im kernel definiert -> c-struct \\
+dann wie wird berechnet
+
+
+
 Im folgenden Abschnitt werden Datenstrukturen und Funktionen aus dem Linux-Kernel vorgestellt, die für Sche"-duling-Aktivitäten des CFS genutzt werden. Dies umfasst die gewichtete Berechnung der genutzten Prozessorzeit, Prozessselektion (Einfügen, Löschen und Auswahl eines Prozesses) und einer kurzen Vorstellung der generischen Sche"-duler-Klasse (\textit{Scheduler-Entry-Point}), aus welcher der CFS aufgerufen wird. Die Erläuterungen folgen den Diskussionen aus \cite{rlove}.
 
 Wie in Kapitel \ref{s:cfs_fktweise} erläutert, ordnet der CFS jedem Prozess eine gewichtete Prozessorzeit zu. In der Datenstruktur \texttt{sched\_entity} (eingebettet in der struct für Prozessdeskriptor \texttt{task\_struct}) ist dies die Variable \texttt{vruntime} (Zeile 8). Die \textit{virtual runtime} eines Prozesses ist die Zeit, die ein Prozess in Ausführung war, gewichtet oder normalisiert mit Hilfe des nice-Wertes anhand der Gesamtanzahl von Prozessen. \texttt{vruntime} wird in Nanosekunden angeben und ist somit losgelöst von der Frequenz des System-Timers. CFS nutzt genau diesen Wert um das ``completely fair'' Prinzip anzuwenden, also um zu messen wie lange ein Prozess gelaufen ist und somit wie viel länger er laufen sollte. \\
