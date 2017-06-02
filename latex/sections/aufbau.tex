@@ -45,9 +45,18 @@ nr\_latency = \frac{sysctl\_sched\_latency}{sysctl\_sched\_min\_granularity}
 Somit gibt die Variable \textit{nr\_latency} die maximal mögliche Anzahl von Prozessen mit gegebenen Parametern vor. Über\-steigt nun die Anzahl der aktuell lauffähigen Prozesse diesen Wert, so muss der Wert von \textit{period}, bzw. in Formel \ref{eq:nr_latency} ensprechend \textit{sysctl\_sched\_latency} erhöht werden.
 
 Im anschließendem Schritt soll eine faire Auswahl auf den nächsten ausführbaren Prozess getroffen werden. Dies geschieht mit einer weiteren Bewertung der Prozesse entsprechend ihrer bereits ausgeführten Zeit. 
-Dazu dient im Kernel die Variable \textit{vruntime}. Die \textit{vruntime}-Variable wird aus dem Verhältnis von bereits absolvierter Zeit zu dem ermitteltem Gewicht aus dem \textit{nice}-Wert gebildet. 
+Dazu dient im Kernel die Variable \textit{vruntime}. Die \textit{vruntime}-Variable wird aus dem Verhältnis von bereits absolvierter Zeit zu dem ermitteltem Gewicht aus dem \textit{nice}-Wert gebildet und ist für die Dauer der Ausführungszeit für jeden Prozess ständig steigend.
+Nach \cite{paperfairness} wird \textit{vruntime} mit folgender Formel ermittelt:
 
+\begin{multline}
+vruntime \mathrel{+}= \frac{delta\_exec}{se\rightarrow load.weight} * NICE\_0\_LOAD \\ = \frac{period}{cfs\_rq\rightarrow load.weight} * NICE\_0\_LOAD
+\label{eq:vruntime}
+\end{multline}
 
+Hierbei stellt \textit{delta\_exec} die bereits ausgeführte Zeit der jeweiligen Prozesses dar und \textit{NICE\_0\_LOAD} ist ein Einheitswert der Gewichte, welcher sich aus einer 10-bit Dualzahl ergibt. Mit Hilfe des ersten Terms wird die aktuelle virtuelle Laufzeit des jeweiligen Prozesses errechnet werden, und mit dem zweiten Term kann die virtuelle Laufzeit errechnet werden, welche jeder Prozess nach Ablauf der Periodenzeit \textit{period} für diesen Zeitabschnitt erreicht haben soll.  
+Mit dieser neuen Variablen können nun die Prozesse entsprechend ihrer Laufzeit und ihrem Gewicht bewertet werden und eine Rangfolge ermittelt werden. Dazu wird in diesem der Rot-Schwarz-Baum [s.Kapitel \ref{s:rb_tree}] verwendet. Die Prozesse werden nach ihrem \textit{vruntime}-Wert in den Baum einsortiert. Die nächsten Zuteilung zum Prozessor bekommt immer das erste Objekt an der linken Seite des Baumes.
+
+Ein Beispiel dazu:
 %Jeder Prozess er\-hält eine Zeitscheibe, welche proportional zum eigenen Gewicht im Verhältnis zu den Gewichten aller Prozesse ist. Die Wahl des nächstes Prozesses fällt immer auf den Prozess, welcher bis zu diesem Zeitpunkt die geringste Zuteilung des Prozessors erhalten hat.
 %Zur Berechnung einer Zeitscheibe, setzt der CF-Scheduler eine sogenannte „targeted latency“. Diese stellt einen Richtwert für die verfügbare Zeit aller anstehenden Prozesse dar, welcher äquivalent im perfekten Multitasking erreicht würde.
 
