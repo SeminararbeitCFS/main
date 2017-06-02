@@ -1,37 +1,51 @@
 \subsection{Funktionsweise}\label{s:cfs_fktweise}
 
-hier sollten wir mal reinschauen:
-https://www.ece.ubc.ca/~sasha/papers/eurosys16-final29.pdf
-
-HAB AUCH SCHON WAS GEFUNDEN...ABER SCHAUE ICH MIR AUCH MAL AN...
+%hier sollten wir mal reinschauen:
+%https://www.ece.ubc.ca/~sasha/papers/eurosys16-final29.pdf
+%HAB AUCH SCHON WAS GEFUNDEN...ABER SCHAUE ICH MIR AUCH MAL AN...
 
 %Das Ziel eines  Completely-Fair-Schedulers{} soll es sein, eine gute Annäherung an das Verhalten eines perfekten Multitasking-Prozessor zu errreichen.
 Das Ziel eines  Completely-Fair-Schedulers{} soll es sein, eine faire Aufteilung der Ressource Prozessor unter einer Menge von ausführbaren Prozessen zu erreichen.
 
 
 %Ein perfekter Multi\-tasking-Prozessor würde jedem Prozess immer ein perfektes $1/n$ Verhältnis zuweisen, wobei $n$ die Menge aller Prozesse darstellt."
-Im einfachsten Fall, wenn keine Prioritäten unter den Prozessen vergeben werden, ist eine perfekte Aufteilung der Ressource gegeben, wenn zu jedem Zeitpunkt jeder Prozess immer eine Zuteilung im Verhältnis $1/n$ erhält, wobei $n$ die Menge aller Prozesse darstellt.
-Bei zwei laufenden Prozessen hieße das, dass beide Prozesse zeitgleich mit jeweils 50 Prozent der Prozessorressource arbeiten dürfen. Dies ist in der Praxis allerdings nicht möglich, da jeder Prozessor immer nur eine Aufgabe zu einem Zeitpunkt bearbeiten kann.
+Im einfachsten Fall, wenn keine Prioritäten unter den Prozessen vergeben werden, ist eine perfekte Aufteilung der Ressource dann gegeben, wenn zu jedem Zeitpunkt jeder Prozess immer eine Zuteilung im Verhältnis $1/n$ erhält, wobei $n$ die Menge aller Prozesse darstellt.
+Bei zwei laufenden Prozessen heißt das, dass beide Prozesse zeitgleich mit jeweils 50 Prozent der Prozessorressource arbeiten. Dies ist in der Praxis allerdings nicht möglich, da jeder Prozessor immer nur eine Aufgabe zu einem Zeitpunkt bearbeiten kann.
 
-Unter Linux und UNIX-artigen System werden daher den beiden Prozessen jeweils Zeitscheiben zugeordnet, und es findet eine sequentielle Abarbeitung statt. In diesem Fall werden die Prozesse abwechselnd mit jeweils 100 Prozent Prozessorzuteilung abgearbeitet.
+Unter Linux und UNIX-artigen System werden daher den beiden Prozessen Zeitscheiben zugeordnet und es findet eine sequentielle Abarbeitung statt. Anschließend werden die Prozesse abwechselnd mit jeweils 100 Prozent Prozessorzuteilung entsprechend ihrer Zeitscheibe verarbeitet.
 
 %Um mit diesem Prinzip eine Annäherung an einen perfekten Multitasking-Prozessor zu erreichen, müsste man die Zuteilung für jeden Prozess in unendlich kleine Zeitscheiben zerlegen und alternierend dem Prozessor zuweisen.
-Je kleiner diese Zeitscheiben gewählt werden, desto mehr wird ein nahezu gleichzeitiges Abarbeiten der anstehenden Prozesse erreicht.
-Würde man zu einer beliebigen Zeit eine Messung der Zuteilungen der Prozesse durchführen, sähe es tatsächlich so aus, als würden alle Prozesse ihr Quantum gleichzeitig verbrauchen.
-Allerdings hat diese Methode eine erheblichen Nachteil. Ein einziger Umschalt\-vorgang be\-nötigt selbst z.B. durch Ein- und Auslagerung der verschieden Daten im Speicher, wieder einen großen Teil der Prozessorleistung. Dadurch würde ein sehr schlechtes Verwaltungs- zu Verarbeitungsverhältnis entstehen und damit wäre der Scheduler sehr uneffizient. Damit es nicht zu dieser Problematik beim CF-Scheduler kommen kann, wird eine minimale Zeitscheibe festgelegt. Diese minimal Zeitscheibe wird im Kernel als \textit{sysctl\-\_sched\-\_min\-\_granularity} bezeichnet \cite{paperfairness}.
+Je kleiner die Zeitscheiben gewählt werden, desto mehr wird ein nahezu zeitgleiches Abarbeiten der anstehenden Prozesse erreicht.
+Wird zu einer beliebigen Zeit eine Messung der bereits zugeteilten Anteile der Prozesse durchgeführt, sieht es tatsächlich so aus, als wür\-den alle Prozesse ihr Quantum gleichzeitig verbrauchen.
+Allerdings hat diese Methode eine erheblichen Nachteil. Ein einziger Umschalt\-vorgang be\-nötigt selbst z.B. durch Ein- und Auslagerung der verschieden Daten im Speicher, wieder einen großen Teil der Prozessorleistung. Dadurch entsteht ein sehr schlechtes Verwaltungs- zu Verarbeitungs\-verhält\-nis und somit ist der Scheduler sehr uneffizient. Damit es nicht zu dieser Problematik beim CF-Scheduler kommen kann, wird eine minimale Zeitscheibe festgelegt. Diese minimale Zeitscheibe wird im Kernel als \textit{sysctl\_sched\_min\_granu\-larity} bezeichnet \cite{paperfairness}.
 Somit wird an dieser Stelle sichergestellt, das der Verwaltungsaufwand zum Umschalten der Prozesse die Bearbeitungszeit der Prozesse im Prozessor nicht übersteigt.
 
 
 %Mit dem CF-Scheduler muss nun eine Umgebung geschaffen werden, welche stark an der des idealen Multitasking-Prozessor anlehnt und wiederum aber auch die Effizienz zur Ausnutzung der Prozessorressource in einen akzeptablen Bereich bewegt.
-Anders als bei den prioritäts\-bestim\-mten Scheduler, welche über Zeitscheiben und Warte\-schlan\-gen die Prioritäten verwalten, berechnet der CF-Scheduler die Zuteilung im Bezug zu allen anderen Prozessen welche sich in der entsprechenden Warteschlange befinden. Der  \textit{nice}-Wert, welcher bereits in älteren Scheduler\-ver\-fahren für die Erstellung der Zeitscheiben zuständig war, wird jetzt verwendet, um den Prozessen ein Gewicht zuzuordnen. Ist der  \textit{nice}-Wert hoch, was eine niedrige Priorität bedeutet, so bekommt der Prozess auch ein niedriges Gewicht zugeteilt. Andersherum bekommt der Prozess ein hohes Gewicht, wenn der  \textit{nice}-Wert niedrig ist.
+Anders als bei den prioritäts\-bestim\-mten Scheduler, welche über Zeitscheiben und Warte\-schlan\-gen die Prioritäten verwalten, berechnet der CF-Scheduler die Zuteilung im Bezug zu allen anderen Prozessen, welche sich in der entsprechenden Warteschlange des Prozessors befinden. Der  \textit{nice}-Wert, welcher bereits in älteren Scheduler\-ver\-fahren für die Erstellung der Zeitscheiben zuständig war, wird jetzt verwendet, um den Prozessen ein Gewicht zuzuordnen. Ist der  \textit{nice}-Wert hoch, was eine niedrige Priorität bedeutet, so bekommt der Prozess auch ein niedriges Gewicht zugeteilt. Andersherum bekommt der Prozess ein hohes Gewicht, wenn der  \textit{nice}-Wert niedrig ist.
 
 Mit Hilfe dieses Gewichtes wird dann das  Completely-Fair-Prinzip [s. Kapitel \ref{s:fair}] angewendet. 
 
-Zunächst wird mit Hilfe des ermittelten Gewichtes und einer vorgegebenen Periode, für welche die Zuteilung der Prozesse ermittelt werden soll, für jeden Prozess eine ideale Zeitscheibe errechnet. Dies geschieht nach \cite{paperfairness} mit folgender Formel:
+Analog der Formel \ref{eq:perfect_fairness} wird zunächst mit Hilfe des ermittelten Gewichtes und der zu berechneten  Periode eine ideale Zeitscheibe errechnet. Dies geschieht nach \cite{paperfairness} mit folgender Formel:  
+
 \begin{equation}
-slice = \frac{se->load.weight}{cfs\_rq->load.weight} * period
+slice = \frac{se\rightarrow load.weight}{cfs\_rq\rightarrow load.weight} * period
 \label{eq:slice}
 \end{equation}
+
+Hierbei ist \textit{se$\rightarrow$load.weight} das berechnete Gewicht des Prozesses aus dem entsprechendem \textit{nice} Wert und die Variable \textit{cfs\_rq$\rightarrow$load.weight} ist die Summe aller Gewichte der momentan aktiven Prozesse der Warte\-schlan\-ge.
+\textit{period} ist der \glqq Zeitschlitz\grqq{}, für welchen eine Bewertung mit Basis auf den idealen Zeitscheiben der aktuellen Prozesse vorgenommen werden soll. Dieser Wert ist nicht konstant und einstellbar. Erreicht z.B. die Anzahl der lauf\-fähigen Prozesse eine kritische Grenze, so muss der Wert von \textit{period} erhöht werden. 
+Diese Grenze wird im Kernel mit Hilfe der Variable \textit{nr\_latency} ermittelt. Diese Variable setzt sich aus dem Verhätlnis von \textit{period} und der minmalen Zeitscheibe zusammen \cite{paperfairness}.
+
+\begin{equation}
+nr\_latency = \frac{sysctl\_sched\_latency}{sysctl\_sched\_min\_granularity}
+\label{eq:nr_latency}
+\end{equation}
+
+Somit gibt die Variable \textit{nr\_latency} die maximal mögliche Anzahl von Prozessen mit gegebenen Parametern vor. Über\-steigt nun die Anzahl der aktuell lauffähigen Prozesse diesen Wert, so muss der Wert von \textit{period}, bzw. in Formel \ref{eq:nr_latency} ensprechend \textit{sysctl\_sched\_latency} erhöht werden.
+
+Im anschließendem Schritt soll eine faire Auswahl auf den nächsten ausführbaren Prozess getroffen werden. Dies geschieht mit einer weiteren Bewertung der Prozesse entsprechend ihrer bereits ausgeführten Zeit. 
+Dazu dient im Kernel die Variable \textit{vruntime}. Die \textit{vruntime}-Variable wird aus dem Verhältnis von bereits absolvierter Zeit zu dem ermitteltem Gewicht aus dem \textit{nice}-Wert gebildet. 
 
 
 %Jeder Prozess er\-hält eine Zeitscheibe, welche proportional zum eigenen Gewicht im Verhältnis zu den Gewichten aller Prozesse ist. Die Wahl des nächstes Prozesses fällt immer auf den Prozess, welcher bis zu diesem Zeitpunkt die geringste Zuteilung des Prozessors erhalten hat.

@@ -6,7 +6,6 @@ Eine sehr bekannte Entwicklung beruht auf der Idee, jedem Klienten ein eigenes G
 Diese Verfahren, welches unter anderem unter dem Namen \glqq Proportional Share Scheduling\grqq{} bekannt sind, wurden bereits vor einigen Jahrzehnten entwickelt und fanden dann z.B. in einem gewichtetem Round-Robin Verfahren Anwendung. Auch unter UNIX fand dieses Verfahren schnell als Scheduler Anwendung mit Hilfe einer Priorität-Steuer\-ung. Dieses Verfahren ist schnell und benötigt immer eine konstante Zeit zum Auswählen des nächsten Klienten. 
 
 Die Proportional-Scheduler können die Verteilung der Ressource hauptsächlich über zwei Wege erreichen:
-
 \begin{enumerate}
 	\item Über die Frequenz. Das heißt, wie oft bekommt ein Klient die Zuteilung. Dies kann zum Beispiel realisiert werden, mit einer entsprechenden Positionierung in einer Warteschlange.
 	\item Über die Zeit. Dafür wird das Zeitquantum, welches einem Klienten zur Verfügung gestellt wird, entsprechend verlängert oder verkürzt.
@@ -32,13 +31,14 @@ Um eine Bewertung der aktuellen angewendeten Strategie zur idealen \glqq complet
 
 \begin{equation}
 E_A(t_1,t_2) = W_{S,A}(t_1,t_2) - W_{o,A}(t_1,t_2)
-\label{eq:perfect_fairness}
+\label{eq:error_fairness}
 \end{equation}
 
 Diese Differenz gibt den Abstand vom gegebenen Algorithmus bzw. der aktuellen Strategie zum optimalen Algorithmus an.
 Ist der Abstand positiv, so bekommt der aktuelle Klient mehr Zuteilung als er mit dem idealen Algorithmus bekommen würde. Ist der Abstand negativ, so erhält der Klient im Vergleich weniger.
 
-Ziel in einer praktischen Lösung im Bezug auf \glqq completely-fair\grqq{} soll es sein, diesen Abstand zu minimieren.
+Je kleiner der Wert aus Formel \ref{eq:error_fairness}, desto mehr erreicht der aktuelle Algorithmus die Funktionsweise des optimalen \glqq completely-fair\grqq{}-Algorithmus.
+%Ziel in einer praktischen Lösung im Bezug auf \glqq completely-fair\grqq{} soll es sein, diesen Abstand
  
 
 
