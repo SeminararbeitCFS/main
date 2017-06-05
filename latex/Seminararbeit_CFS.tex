@@ -75,13 +75,13 @@ Ziel dieses Abschnittes ist es, dem Leser ein grundlegendes Verständnis für di
 \input{sections/comp_to_O1}
 
 \section{Zusammenfassung}
-In dieser Arbeit sind die grundlegenden Eigenschaften und der Aufbau des CF-Schedulers dargestellt. Es wird gezeigt, dass der CF-Scheduler mit Hilfe bestimmter Algorithmen und Prinzipien versucht, immer eine faire Verteilung unter den aufzuführenden Prozessen zu erreichen. Außerdem soll dabei auch weiterhin eine annähernde Multi-Task Umgebung beibehalten werden. Ein Vergleich zum O(1) Scheduler zeigt im Bereich des Interaktiven X-Window Server ein deutliche Verbesserung der Latenzzeit.
+In dieser Arbeit sind die grundlegenden Eigenschaften und der Aufbau des CF-Schedulers dargestellt. Es wird gezeigt, dass der CF-Scheduler mit Hilfe bestimmter Algorithmen und Prinzipien versucht, immer eine faire Verteilung unter den aufzuführenden Prozessen zu erreichen. Außerdem wird dabei auch weiterhin eine annähernde Multi-Task Umgebung beibehalten. Ein Vergleich zum O(1) Scheduler bestätigt unter anderem im Bereich des Interaktiven X-Window Server eine deutliche Verbesserung der Latenzzeit.
 
 Ein großes Problem stellt sich allerdings heraus, wenn der CF-Scheduler mit zu vielen Prozessen konfrontiert wird. Über\-steigt die Menge der Anfragen einen gewissen Rahmen, so wird sich der Scheduler mehr und mehr den Prinzipien des \glqq com\-pletely-fair\grqq{} Prinzips entfernen.  
 
 Auch Programme, welche mit sehr vielen Threads arbeiten, zwingen den Scheduler zu einem Ungleichgewicht. Da der Scheduler taskbasiert arbeitet, erhalten Programme mit einer hohen Anzahl von Threads eine für sie vorteilhafte, aber für andere Programme unfaire Prozessorzuteilung. Ein Lösung für dieses Problem könnte der bereits in Entwicklung befindliche Process-Fair-Scheduler (PFS) bereitstellen. Dieser versucht eine faire Verteilung über die Prozesse selbst zu erreichen. Dabei wird z.B. das Gewicht des anstehenden Prozesses nochmal durch die Anzahl der Threads des sich gerade in Ausführung befindenen Programmes geteilt. Wie weit sich dieser Ansatz allerdings durchsetzen wird, muss in Zukunft durch praktischen Einsatz erprobt werden.
 
-Es ist zu sehen, dass noch einige Anforderungen an den Scheduler offen sind.
+Es ist zu sehen, dass noch einige Anforderungen an den Scheduler bestehen bleiben.
 Wie auch gerade im Bereich des Open-Source zu erwarten ist, steht dem Scheduler unter Linux-Systemen noch eine ständig Weiterentwicklung bevor.  
 
 %Anhand dieser Erläuterung kann gesehen werden, dass der CF-Scheduler nur eine Annäherung an ein perfektes faires Scheduling erreicht. Das große Problem der CF-Scheduler ist eine übermäßige Menge an Prozessen. Wird diese Menge in einem gewissen Rahmen gehalten, so kann der CF-Scheduler das  completely-fair -Prinzip gut erreichen. 
