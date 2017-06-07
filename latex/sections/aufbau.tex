@@ -59,7 +59,7 @@ Hierbei ist \textit{se$\rightarrow$load.weight} das Gewicht des Prozesses aus de
 
    
 Die Variable \textit{cfs\_rq$\rightarrow$load.weight} ist die Summe aller Gewichte der momentan aktiven Prozesse der Warte\-schlan\-ge.
-\textit{period} ist der \glqq Zeitschlitz\grqq{}, für welchen eine Bewertung mit Basis auf die idealen Zeitscheiben der aktuellen Prozesse vorgenommen werden soll. Dieser Wert ist nicht konstant und einstellbar. Erreicht z.B. die Anzahl der lauf\-fähigen Prozesse eine kritische Grenze, so muss der Wert von \textit{period} erhöht werden. 
+\textit{period} ist der \textit{Zeitschlitz}, für welchen eine Bewertung mit Basis auf die idealen Zeitscheiben der aktuellen Prozesse vorgenommen werden soll. Dieser Wert ist nicht konstant und einstellbar. Erreicht z.B. die Anzahl der lauf\-fähigen Prozesse eine kritische Grenze, so muss der Wert von \textit{period} erhöht werden. 
 Diese Grenze wird im Kernel mit Hilfe der Variable \textit{nr\_latency} ermittelt. Diese Variable setzt sich aus dem Verhätlnis von \textit{period} und der minmalen Zeitscheibe zusammen \cite{paperfairness}.
 
 \begin{equation}
@@ -87,7 +87,7 @@ Mit Hilfe des ersten Terms aus Formel \ref{eq:vruntime} wird die aktuelle virtue
 Mit dieser neuen Variablen können nun die Prozesse entsprechend ihrer Laufzeit und ihrem Gewicht bewertet und eine Rangfolge erstellt werden. Dazu wird an dieser Stelle der Rot-Schwarz-Baum [s.Kapitel \ref{s:rb_tree}] verwendet. Die Prozesse werden nach ihrem \textit{virtual runtime}-Wert in den Baum einsortiert. Dabei steht der Prozess mit der kleinsten \textit{virtual runtime} am weitesten links und kann nun durch den Scheduler ohne lange Suchzeiten ermittelt und als nächster auszuführender Prozess ausgewählt werden. 
 
 Stehen zum Beispiel drei lauffähige Prozesse  mit \textit{nice}-Werten $0$, $1$ und $2$ und entsprechenden Gewichten von $1024$, $820$ und $655$ in einer Warteschlange für einen Prozessor.
-Dann ergeben sich die idealen Zeitscheiben bei einer Periode von 20ms mit Formel \ref{eq:slice} zu $8.2ms$, $6.6ms$ und $5.2ms$. Ermittelt man nun dazu passend die \textit{virtual runtime}-Werte und zwar so, dass jeder Prozess seine Zuteilung für diese Periode vollständig ausgenutzt hat, so wird ersichtlich, dass alle Prozesse nun den gleichen \textit{virtual runtime}-Wert von ca. $8*10^{-6}$ besitzen. Damit wird eine faire Aufteilung mit Be\-rück\-sichtigung der \glqq Prioritäten\grqq{} gewährt.
+Dann ergeben sich die idealen Zeitscheiben bei einer Periode von 20ms mit Formel \ref{eq:slice} zu $8.2ms$, $6.6ms$ und $5.2ms$. Ermittelt man nun dazu passend die \textit{virtual runtime}-Werte und zwar so, dass jeder Prozess seine Zuteilung für diese Periode vollständig ausgenutzt hat, so wird ersichtlich, dass alle Prozesse nun den gleichen \textit{virtual runtime}-Wert von ca. $8*10^{-6}$ besitzen. Damit wird eine faire Aufteilung mit Be\-rück\-sichtigung der \textit{Prioritäten} gewährt.
 
 %Jeder Prozess er\-hält eine Zeitscheibe, welche proportional zum eigenen Gewicht im Verhältnis zu den Gewichten aller Prozesse ist. Die Wahl des nächstes Prozesses fällt immer auf den Prozess, welcher bis zu diesem Zeitpunkt die geringste Zuteilung des Prozessors erhalten hat.
 %Zur Berechnung einer Zeitscheibe, setzt der CF-Scheduler eine sogenannte „targeted latency“. Diese stellt einen Richtwert für die verfügbare Zeit aller anstehenden Prozesse dar, welcher äquivalent im perfekten Multitasking erreicht würde.
