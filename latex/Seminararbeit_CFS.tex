@@ -14,6 +14,7 @@
 \usepackage{color}
 \usepackage{listings}
 \usepackage{hyperref}
+\usepackage{float}
 \lstset{
   frame=trb,
   language=C,
@@ -53,10 +54,6 @@
 Ein Betriebssystem kann als eine Komposition von Computerprogrammen definiert werden, dass die Hardware eines Computers verwaltet und Anwendungsprogrammen zur Verfügung stellt. Die Software Betriebssystem fungiert als Vermittler zwischen dem Benutzer eines Computers und dessen Hardware. Der Prozessscheduler eines Betriebssystems ist für die Verteilung der CPU-Bandbreite gegenüber von Aufgaben (Prozessen) zuständig. Der Algorithmus des Schedulers bestimmt die Reihenfolge und wirkt auf die optimale Leistung ein.\\
 Der Linux-Kernel ist einer der Bereiche, die aktiv durch die Open-Source-Community entwickelt und verbessert werden. Darunter fällt auch die Implementierung des Prozessschedulers. Der Completely Fair Scheduler (CFS) löste mit der Kernelversion 2.6.23 den seit Version 2.6 im Einsatz befindlichen O(1)-Scheduler ab.
 
-
-
-
-
 \section{Grundlagen zum Scheduling}
 In diesem Abschnitt wird der Begriff Scheduling im Allgemeinen und konkret im Bezug auf Prozess-Scheduling definiert und anhand von Beispielen exemplarisch konkretisiert. 
 Darauf folgend werden die Kriterien wiederholt, die durch effizientes Scheduling optimiert werden.
@@ -67,14 +64,13 @@ Ebenso erfolgt eine Einführung in die Datenstruktur \textit{Rot-Schwarz-Baum} s
 \input{sections/rb_tree}
 \input{sections/cf_principe}
 
-
 \section{Der Completely-Fair-Scheduler}\label{s:cfsmain}
 Ziel dieses Abschnittes ist es, dem Leser ein grundlegendes Verständnis für die Funktionsweise des CFS zu vermitteln. Es wird konkretisiert, wie dieser Scheduler einen perfekten Multitasking-Prozessor approximiert und welche Datenstrukturen und Funktionen dafür in der Programmiersprache C im Linux-Kernel implementiert sind.
 
 \input{sections/aufbau}
 \input{sections/c_structs}
 \input{sections/comp_to_O1}
-
+%\pagebreak
 \section{Zusammenfassung}
 In dieser Arbeit sind die grundlegenden Eigenschaften und der Aufbau des CF-Schedulers dargestellt. Es wird gezeigt, dass der CF-Scheduler mit Hilfe bestimmter Algorithmen und Prinzipien versucht, immer eine faire Verteilung unter den aufzuführenden Prozessen zu erreichen. Außerdem wird dabei auch weiterhin eine annähernde Multi-Task Umgebung beibehalten. Ein Vergleich zum O(1) Scheduler bestätigt unter anderem im Bereich des Interaktiven X-Window Server eine deutliche Verbesserung der Latenzzeit.
 
