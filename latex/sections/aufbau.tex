@@ -71,7 +71,7 @@ Somit gibt die Variable \textit{nr\_latency} die maximal mögliche Anzahl von Pr
 
 Im anschließendem Schritt soll eine faire Auswahl auf den nächsten ausführbaren Prozess getroffen werden. Dies geschieht mit einer weiteren Bewertung der Prozesse im Bezug zu ihrer bereits ausgeführten Zeit. 
 Dazu dient im Algorithmus die Variable \textit{virtual runtime}. In \cite{mjones} wird die \textit{virtual runtime} definiert als Menge der CPU-Zeit, die einer gewissen Aufgabe zugeordnet worden ist. Umso kleiner der Wert für \textit{virtual runtime} ist, desto höhere ist die Dringlichkeit dieser Aufgabe den Prozessor für sich zugewiesen zu bekommen. Ebenso beschreibt \cite{mjones} die Funktionalität von CFS, dass eine gewisse \textit{Sleeper-Fairness} implementiert ist: Aufgaben, die zu einem Zeitpunkt nicht lauffähig sind (z.B. beim Warten auf I/O"--Operationen) erhalten einen vergleichbaren Anteil am Prozessor, wenn sie diesen benö"-tigen.\\
-Die \textit{virtual runtime}-Variable wird aus dem Verhältnis von bereits absolvierter Zeit zu dem ermitteltem Gewicht des Prozesses gebildet und ist für die Dauer der Ausführungszeit für jeden Prozess ständig steigend \cite{rlove}. 
+Die \textit{virtual runtime}-Variable wird aus dem Verhältnis von bereits absolvierter Zeit zu dem ermitteltem Gewicht des Prozesses gebildet und ist für die Dauer der Ausführungs"-zeit für jeden Prozess ständig steigend \cite{rlove}. 
 Nach \cite{paperfairness} wird \textit{virtual runtime} mit folgender Formel ermittelt:
 
 \begin{multline}

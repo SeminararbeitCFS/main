@@ -6,8 +6,7 @@ Im Vergleich zum CFS arbeitet der O(1) - Scheduler mit je einer Warteschlange (e
 
 Im Paper \cite{papercomparison} haben die Autoren die beiden Scheduler hinsichtlich Fairness und Interaktivitätslatenz verglichen. Die Testszenarien und  Resultate aus \cite{papercomparison} werden im folgenden Abschnitt vorgestellt.
 
-Der Fairness - Test wurde durchgeführt, indem gemessen wurden, wie genau der Scheduler die CPU - Bandbreite über mehrere Prozesse verteilt. Dazu wurde ein Benchmark - Programm beiseite gezogen, dass eine diskrete Integralrechnung der Zahl Pi durchführt. Der Benchmark besteht dabei aus einem Elternprozess und N Kindprozessen, die die Berechnung durchführen. Dazu werden erst N Kindprozesse durch den Elternprozess erzeugt und durch ein Signal wird mitgeteilt, dass alle Kinder erzeugt worden sind und diese gleichzeitig mit der diskreten Integralrechnung beginnen. Es wird die Zeit in Nanosekunden gemessen, die jedes Kind für die Integralrechnung benötigt. Dabei werden vier Test mit 8,16,24 und 32 Kindern à 100 Wiederholungen durchgeführt. Als Testumgebung diente dabei ein Intel - Prozessor mit 2.13 GHz, 2GB Arbeitsspeicher und einem Linux 2.6.22 für O(1) und ein Linux 2.6.24.2 für CFS. Es wurde nur ein Prozessorkern aktiviert, damit nur eine Warteschlange genutzt wird. \\
-. 
+Der Fairness - Test wurde durchgeführt, indem gemessen wurden, wie genau der Scheduler die CPU - Bandbreite über mehrere Prozesse verteilt. Dazu wurde ein Benchmark - Programm beiseite gezogen, dass eine diskrete Integralrechnung der Zahl Pi durchführt. Der Benchmark besteht dabei aus einem Elternprozess und N Kindprozessen, die die Berechnung durchführen. Dazu werden erst N Kindprozesse durch den Elternprozess erzeugt und durch ein Signal wird mitgeteilt, dass alle Kinder erzeugt worden sind und diese gleichzeitig mit der diskreten Integralrechnung beginnen. Es wird die Zeit in Nanosekunden gemessen, die jedes Kind für die Integralrechnung benötigt. Dabei werden vier Test mit 8,16,24 und 32 Kindern à 100 Wiederholungen durchgeführt. Als Testumgebung diente dabei ein Intel - Prozessor mit 2.13 GHz, 2GB Arbeitsspeicher und einem Linux 2.6.22 für O(1) und ein Linux 2.6.24.2 für CFS. Es wurde nur ein Prozessorkern aktiviert, damit nur eine Warteschlange genutzt wird.  
 \begin{figure} [h]
 	\centering
 	\includegraphics[width=0.45\textwidth]{pictures/fairness_32_cfs.png}
@@ -20,6 +19,7 @@ Der Fairness - Test wurde durchgeführt, indem gemessen wurden, wie genau der Sc
  	\caption{Fairness-Messung für N=32 im O(1) Scheduler.}
  	\label{fig:fair_meas_o1}
 \end{figure}
+
 In den Abbilungen \ref{fig:fair_meas_cfs} \& \ref{fig:fair_meas_o1} sind die Ergebnisse bei N=32 zu sehen. Dabei ist zu erkennen, dass die Standardabweichung der verbrauchten Zeit pro Kind beim O(1) - Scheduler höher ist als bei CFS. Die weite Streuung der Daten im Diagramm \ref{fig:fair_meas_o1} zeigt, dass manche Kinder schneller fertig sind als andere. Dahingegen sind die Daten im Diagramm zum CFS knapper un konzentrierte um den Durchschnittswert angeordnet. \\
 Nach \cite{papercomparison} kann zusammenfassend gesagt werden, dass CFS die zur Verfügung stehende CPU - Zeit auf eine fairere Weise über jede Aufgabe verteilt. Die Autoren nennen als Gründe dafür, dass CFS die Zeitquanten sehr granular verteilt und diese in Nanosekunden durchgeführt wird
 

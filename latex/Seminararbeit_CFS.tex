@@ -30,11 +30,12 @@
 }
 
 
+
 \begin{document}
 
 % Unbedingt angeben: Titel, Autoren, E-Mail
 % Freiwillig: Adresse
-\title{The Completely Fair Scheduler}
+\title{Der Completely Fair Scheduler}
 \numberofauthors{2}
 \author{
   \alignauthor Lukas Essig\\
@@ -45,19 +46,27 @@
 
 \maketitle
 
-\abstract{ tbd. } % Trennhilfe \- manchmal nützlich
+\abstract{
+Die grundlegende Aufgabe eines Prozess - Schedulers ist es, lauffähige Prozesse mit bestmöglicher Erfüllung von bestimmten Kriterien der endlichen Ressource Rechenzeit zuzuteilen. In diesem Artikel wird die Technik und die Prinzipien des Completely Fair Scheduler (CFS) erklärt. CFS ist der aktuelle Linux - Scheduler, der seinen Vorgäng"-er O(1) - Scheduler mit Kernel - Version 2.6.23 abgelöst hat. Dieser Artikel zeigt, dass der CFS ohne komplexe Algorithmen und Heuristiken das Kriterium Fairness sehr gut erfüllt. Jedem Prozess ist eine Variable \texttt{vruntime} zugeordnet, die auf Nanosekunden genau bestimmt, wie lange der Prozess schon die CPU genutzt hat. Der Prozess mit dem niedrigsten Wert für \texttt{vruntime} hat die höchste Dringlichkeit an CPU - Zeit zu kommen. Als Datenstruktur wird dafür ein nach \texttt{vruntime} sortierter Rot - Sch"-warz - Baum verwendet, wobei das Element mit niedrigstem Schlüssel ganz links steht. Die Wahl des am Nächsten auszuführenden Prozesses ist sehr schnell und einfach, da der linkeste Knoten des Baums immer zwischengespeichert ist und darauf direkt zugegriffen werden kann. Der Vergleich zum O(1) - Scheduler beweist, dass CFS die CPU sehr fair über alle Prozesse im System verteilt und gleichzeitig gute Werte für die Latenz bei interaktiven Aufgaben zeigt ohne diese explizit wie der Vorgänger zu bevorzugen.
+
+
+ } % Trennhilfe \- manchmal nützlich
 
 \keywords{Linux, CFS, Rot-Schwarz-Baum, Scheduling, completely fair}
 
 % Section-Überschriften werden in GROSSBUCHSTABEN umgestellt
 \section{Einleitung}
-Ein Betriebssystem kann als eine Komposition von Computerprogrammen definiert werden, dass die Hardware eines Computers verwaltet und Anwendungsprogrammen zur Verfügung stellt. Die Software Betriebssystem fungiert als Vermittler zwischen dem Benutzer eines Computers und dessen Hardware. Der Prozessscheduler eines Betriebssystems ist für die Verteilung der CPU-Bandbreite gegenüber von Aufgaben (Prozessen) zuständig. Der Algorithmus des Schedulers bestimmt die Reihenfolge und wirkt auf die optimale Leistung ein.\\
-Der Linux-Kernel ist einer der Bereiche, die aktiv durch die Open-Source-Community entwickelt und verbessert werden. Darunter fällt auch die Implementierung des Prozessschedulers. Der Completely Fair Scheduler (CFS) löste mit der Kernelversion 2.6.23 den seit Version 2.6 im Einsatz befindlichen O(1)-Scheduler ab.
+Ein Betriebssystem kann als eine Komposition von Computerprogrammen definiert werden, das die Hardware eines Computers verwaltet und Anwendungsprogrammen zur Verfügung stellt. Die Software Betriebssystem fungiert als Vermittler zwischen dem Benutzer eines Computers und dessen Hardware. Dabei ist der Prozess - Scheduler eines Betriebssystems für die Verteilung der CPU-Bandbreite gegenüber von Aufgaben (Prozessen) zuständig. Der Algorithmus des Schedulers bestimmt die Reihenfolge der Abarbeitung und wirkt auf die optimale Leistung ein.\\
+Der Linux-Kernel ist einer der Bereiche, die aktiv durch die Open-Source-Community entwickelt und verbessert werden. Darunter fällt auch die Implementierung des CPU - Schedulers. Der Completely Fair Scheduler (CFS) löste mit der Kernelversion 2.6.23 den seit Version 2.6 im Einsatz befindlichen O(1)-Scheduler ab.\\
+In diesem Artikel werden die Prinzipien und Funktionsweisen dieses Prozess - Schedulers dargestellt. Ferner wird kurz auf die Implementierung im aktuellen Linux - Kernel eingegangen sowie ein Vergleich zum Vorgänger vorgenommen.\\
+Dazu wird einleitend in Abschnitt \ref{s:basics} der Begriff Scheduling definiert sowie wichtige Parameter für Scheduling - Verfahren vorgestellt. Ferner erfolgt eine Beschreibung zur elementaren Datenstruktur Rot - Schwarz - Baum. Abschließend wird das im CFS zum Einsatz kommende \textit{completely fair} Prinzip erläutert.\\
+Abschnitt \ref{s:cfsmain} widmet sich der grundlegenden Funktionsweise inklusive Beschreibung der mathematischen Berechnungen wichtiger Variablen. Darauf folgend wird die Implementierung im Linux - Kernel beschrieben und somit das Prinzip des CFS exemplifiziert. Am Ende wird ein Vergleich der Scheduler CFS und O(1) hinsichtlich Fairness und Interaktivität exzerpiert. \\
+Abschließend wird dieser Artikel in Abschnitt \autoref{s:end} zusammengefasst.
 
-\section{Grundlagen zum Scheduling}
-In diesem Abschnitt wird der Begriff Scheduling im Allgemeinen und konkret im Bezug auf Prozess-Scheduling definiert und anhand von Beispielen exemplarisch konkretisiert. 
+\section{Grundlagen zum Scheduling}\label{s:basics}
+In diesem Abschnitt wird der Begriff Scheduling im Allgemeinen und konkret im Bezug auf Prozes - Scheduling definiert und anhand von Beispielen exemplarisch konkretisiert. 
 Darauf folgend werden die Kriterien wiederholt, die durch effizientes Scheduling optimiert werden.
-Ebenso erfolgt eine Einführung in die Datenstruktur \textit{Rot-Schwarz-Baum} sowie dem \textit{completely fair} Prinzip.
+Ebenso erfolgt eine Einführung in die Datenstruktur \textit{Rot - Schwarz - Baum} sowie dem \textit{completely fair} - Prinzip.
 
 \input{sections/scheduling}
 \input{sections/parameters}
@@ -65,21 +74,21 @@ Ebenso erfolgt eine Einführung in die Datenstruktur \textit{Rot-Schwarz-Baum} s
 \input{sections/cf_principe}
 
 \section{Der Completely-Fair-Scheduler}\label{s:cfsmain}
-Ziel dieses Abschnittes ist es, dem Leser ein grundlegendes Verständnis für die Funktionsweise des CFS zu vermitteln. Es wird konkretisiert, wie dieser Scheduler einen perfekten Multitasking-Prozessor approximiert und welche Datenstrukturen und Funktionen dafür in der Programmiersprache C im Linux-Kernel implementiert sind.
+Ziel dieses Abschnittes ist es, dem Leser ein grundlegendes Verständnis für die Funktionsweise des CFS zu vermitteln. Es wird konkretisiert, wie dieser Scheduler einen perfekten Multitasking - Prozessor approximiert und welche Datenstrukturen und Funktionen dafür in der Programmiersprache C im Linux - Kernel implementiert sind. Abschließend wird der CFS in den Punkten Fairness und Interaktivität mit seinem Vorgänger verglichen.
 
 \input{sections/aufbau}
 \input{sections/c_structs}
 \input{sections/comp_to_O1}
-%\pagebreak
-\section{Zusammenfassung}
-In dieser Arbeit sind die grundlegenden Eigenschaften und der Aufbau des CF-Schedulers dargestellt. Es wird gezeigt, dass der CF-Scheduler mit Hilfe bestimmter Algorithmen und Prinzipien versucht, immer eine faire Verteilung unter den aufzuführenden Prozessen zu erreichen. Außerdem wird dabei auch weiterhin eine annähernde Multi-Task Umgebung beibehalten. Ein Vergleich zum O(1) Scheduler bestätigt unter anderem im Bereich des Interaktiven X-Window Server eine deutliche Verbesserung der Latenzzeit.
 
-Ein großes Problem stellt sich allerdings heraus, wenn der CF-Scheduler mit zu vielen Prozessen konfrontiert wird. Über\-steigt die Menge der Anfragen einen gewissen Rahmen, so wird sich der Scheduler mehr und mehr den Prinzipien des \glqq com\-pletely-fair\grqq{} Prinzips entfernen.  
+\section{Zusammenfassung}\label{s:end}
+In dieser Arbeit sind die grundlegenden Eigenschaften und der Aufbau des CF - Schedulers dargestellt. Es wird gezeigt, dass der CF - Scheduler mit Hilfe effizienter Algorithmen, einfachen Prinzipien und der Datenstruktur Rot - Schwarz - Baum versucht, immer eine faire Verteilung unter den aufzuführenden Prozessen zu erreichen. Zugleich wird dabei auch weiterhin eine annähernde Multitask - Umgebung beibehalten. Im Vergleich zum O(1) - Scheduler wird bewiesen, dass der CFS das Kriterium Fairness deutlich verfeinert. Darüber hinaus wird aufgezeigt, dass der CFS mit einer besseren Fairness trotzdem gute Latenzzeiten im Bereich von interaktiven Aufgaben aufweist ohne diese explizit zu bevorzugen.
 
-Auch Programme, welche mit sehr vielen Threads arbeiten, zwingen den Scheduler zu einem Ungleichgewicht. Da der Scheduler taskbasiert arbeitet, erhalten Programme mit einer hohen Anzahl von Threads eine für sie vorteilhafte, aber für andere Programme unfaire Prozessorzuteilung. Ein Lösung für dieses Problem könnte der bereits in Entwicklung befindliche Process-Fair-Scheduler (PFS) bereitstellen. Dieser versucht eine faire Verteilung über die Prozesse selbst zu erreichen. Dabei wird z.B. das Gewicht des anstehenden Prozesses nochmal durch die Anzahl der Threads des sich gerade in Ausführung befindenen Programmes geteilt. Wie weit sich dieser Ansatz allerdings durchsetzen wird, muss in Zukunft durch praktischen Einsatz erprobt werden.
+Ein großes Problem stellt sich allerdings heraus, wenn der CF - Scheduler mit zu vielen Prozessen konfrontiert wird. Über\-steigt die Menge der Anfragen einen gewissen Rahmen, so wird sich der Scheduler mehr und mehr den  \glqq com\-pletely-fair\grqq{} Prinzipien entfernen.  
+
+Auch Programme, welche mit sehr vielen Threads arbeiten, zwingen den Scheduler zu einem Ungleichgewicht. Da dieser Prozess - Scheduler taskbasiert arbeitet, erhalten Programme mit einer hohen Anzahl von Threads eine für sie vorteilhafte, aber für andere Programme unfaire Prozessorzuteilung. Ein Lösung für dieses Problem könnte der bereits in Entwicklung befindliche Process - Fair - Scheduler (PFS) bereitstellen. Dieser versucht eine faire Verteilung über die Prozesse selbst zu erreichen. Dabei wird z.B. das Gewicht des anstehenden Prozesses nochmal durch die Anzahl der Threads des sich gerade in Ausführung befindenen Programmes geteilt. Wie weit sich dieser Ansatz allerdings durchsetzen wird, muss in Zukunft durch praktischen Einsatz erprobt werden.
 
 Es ist zu sehen, dass noch einige Anforderungen an den Scheduler bestehen bleiben.
-Wie auch gerade im Bereich des Open-Source zu erwarten ist, steht dem Scheduler unter Linux-Systemen noch eine ständig Weiterentwicklung bevor.  
+Wie auch im Bereich des Open - Source zu erwarten, steht dem Scheduler unter Linux - Systemen noch eine ständige Weiterentwicklung bevor.  
 
 %Anhand dieser Erläuterung kann gesehen werden, dass der CF-Scheduler nur eine Annäherung an ein perfektes faires Scheduling erreicht. Das große Problem der CF-Scheduler ist eine übermäßige Menge an Prozessen. Wird diese Menge in einem gewissen Rahmen gehalten, so kann der CF-Scheduler das  completely-fair -Prinzip gut erreichen. 
 
