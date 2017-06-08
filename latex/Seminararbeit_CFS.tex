@@ -90,7 +90,7 @@ Ein großes Problem stellt sich allerdings heraus, wenn der CFS-Scheduler mit zu
 Auch Programme, welche mit sehr vielen Threads arbeiten, zwingen den Scheduler zu einem Ungleichgewicht. Da dieser Prozess-Scheduler taskbasiert arbeitet, erhalten Programme mit einer hohen Anzahl von Threads eine für sie vorteilhafte, aber für andere Programme unfaire Prozessorzuteilung. Ein Lösung für dieses Problem könnte der bereits in Entwicklung befindliche Process-Fair-Sched\-uler (PFS) bereitstellen. Dieser versucht eine faire Verteilung über die Prozesse selbst zu erreichen. Dabei wird z.B. das Gewicht des anstehenden Prozesses nochmal durch die Anzahl der Threads des sich gerade in Ausführung befindenen Programmes geteilt. Wie weit sich dieser Ansatz allerdings durchsetzen wird, muss in Zukunft durch praktischen Einsatz erprobt werden.
 
 Es ist zu sehen, dass noch einige Anforderungen an den Scheduler bestehen bleiben.
-Wie auch im Bereich des Open-Source zu erwarten ist, steht dem Scheduler unter Linux-Systemen noch eine ständige Weiterentwicklung bevor.  
+Wie auch gerade im Bereich des Open-Source zu erwarten ist, steht dem Scheduler unter Linux-Systemen noch eine ständige Weiterentwicklung bevor.  
 
 %Anhand dieser Erläuterung kann gesehen werden, dass der CF-Scheduler nur eine Annäherung an ein perfektes faires Scheduling erreicht. Das große Problem der CF-Scheduler ist eine übermäßige Menge an Prozessen. Wird diese Menge in einem gewissen Rahmen gehalten, so kann der CF-Scheduler das  completely-fair -Prinzip gut erreichen. 
 
