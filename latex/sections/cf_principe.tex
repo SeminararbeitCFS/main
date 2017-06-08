@@ -1,4 +1,4 @@
-\subsection{Das Completely-Fair-Prinzip}\label{s:fair}
+\subsection{Das completely-fair Prinzip}\label{s:fair}
 Die wichtigste Aufgabe eines Schedulers ist die Verteilung von knappen Ressourcen unter einer Menge von Klienten. 
 Um dies zu realisieren, wurden bereits viele Anwendungen in Theorie und Praxis entwickelt.
 Eine sehr bekannte Entwicklung beruht auf der Idee, jedem Klienten ein eigenes Gewicht zu zuweisen, welche dann je nach Höhe zum Gebrauch der begrenzten Ressource berechtigt.
@@ -27,7 +27,7 @@ Hierbei ist $S_A$ der proportionale Anteil des Klienten $A$, $S_i$ die Anteile a
 
 Im idealen System, wenn alle Klienten ihre Zuweisung gleichzeitig erhalten und ihren geforderten Ressourcenanspruch simultan verbrauchen könnten, wäre es möglich die obige Gleichung für alle Klienten entsprechend aufrecht zu erhalten.
 Damit wäre eine \textit{completely-fair} Verteilung gegeben. Allerdings ist dies in der Praxis nicht möglich, da immer nur ein Klienten für die Ressource die Zuteilung bekommen kann.
-Um eine Bewertung der aktuellen angewendeten Strategie zur idealen \textit{completely-fair}-Strategie zu erhalten, kann ein sogenannter \textit{service time error} mit folgender Formel berechnet werden:
+Um eine Bewertung der aktuellen angewendeten Strategie zur idealen \textit{completely-fair} Strategie zu erhalten, kann ein sogenannter \textit{service time error} mit folgender Formel berechnet werden:
 
 \begin{equation}
 E_A(t_1,t_2) = W_{S,A}(t_1,t_2) - W_{o,A}(t_1,t_2)
@@ -37,7 +37,7 @@ E_A(t_1,t_2) = W_{S,A}(t_1,t_2) - W_{o,A}(t_1,t_2)
 Diese Differenz gibt den Abstand vom gegebenen Algorithmus bzw. der aktuellen Strategie zum optimalen Algorithmus an.
 Ist der Abstand positiv, so bekommt der aktuelle Klient mehr Zuteilung als er mit dem idealen Algorithmus bekommen würde. Ist der Abstand negativ, so erhält der Klient im Vergleich weniger.
 
-Je kleiner der Wert aus Formel \ref{eq:error_fairness}, desto mehr erreicht der aktuelle Algorithmus die Funktionsweise des optimalen \textit{completely-fair}-Algorithmus.
+Je kleiner der Wert aus Formel \ref{eq:error_fairness}, desto mehr erreicht der aktuelle Algorithmus die Funktionsweise des optimalen \textit{completely-fair} Algorithmus.
 %Ziel in einer praktischen Lösung im Bezug auf \glqq completely-fair\grqq{} soll es sein, diesen Abstand
  
 

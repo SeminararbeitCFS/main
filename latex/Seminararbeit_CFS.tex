@@ -52,14 +52,14 @@ Die grundlegende Aufgabe eines Prozess - Schedulers ist es, lauffähige Prozesse
 
  } % Trennhilfe \- manchmal nützlich
 
-\keywords{Linux, CFS, Rot-Schwarz-Baum, Scheduling, completely fair}
+\keywords{Linux, CFS, Rot-Schwarz-Baum, Scheduling, completely-fair}
 
 % Section-Überschriften werden in GROSSBUCHSTABEN umgestellt
 \section{Einleitung}
 Ein Betriebssystem kann als eine Komposition von Computerprogrammen definiert werden, welche die Hardware eines Computers verwaltet und Anwendungsprogrammen zur Verfügung stellt. Die Software Betriebssystem fungiert als Vermittler zwischen dem Benutzer eines Computers und dessen Hardware. Dabei ist der Prozess - Scheduler  für die Verteilung der CPU-Bandbreite gegenüber von Aufgaben (Prozessen) zuständig. Der Algorithmus des Schedulers bestimmt die Reihenfolge der Abarbeitung und wirkt auf die optimale Leistung ein.\\
 Der Linux - Kernel ist einer der Bereiche, die aktiv durch die Open - Source - Community entwickelt und verbessert werden. Darunter fällt auch die Implementierung des CPU - Schedulers. Der Completely Fair Scheduler (CFS) löste mit der Kernelversion 2.6.23 den seit Version 2.6 im Einsatz befindlichen O(1) - Scheduler ab.\\
 In diesem Artikel werden die Prinzipien und Funktionsweisen dieses Prozess - Schedulers dargestellt. Ferner wird kurz auf die Implementierung im aktuellen Linux - Kernel eingegangen sowie ein Vergleich zum Vorgänger vorgenommen.\\
-Dazu wird einleitend in Abschnitt \ref{s:basics} der Begriff Scheduling definiert sowie wichtige Parameter für Scheduling - Verfahren vorgestellt. Ferner erfolgt eine Beschreibung zur elementaren Datenstruktur Rot - Schwarz - Baum. Abschließend wird das im CFS zum Einsatz kommende \textit{completely fair} Prinzip erläutert.\\
+Dazu wird einleitend in Abschnitt \ref{s:basics} der Begriff Scheduling definiert sowie wichtige Parameter für Scheduling - Verfahren vorgestellt. Ferner erfolgt eine Beschreibung zur elementaren Datenstruktur Rot - Schwarz - Baum. Abschließend wird das im CFS zum Einsatz kommende \textit{com\-ple\-te\-ly-fair} Prinzip erläutert.\\
 Abschnitt \ref{s:cfsmain} widmet sich der grundlegenden Funktionsweise inklusive Beschreibung der mathematischen Berechnungen wichtiger Variablen. Darauf folgend wird die Implementierung im Linux - Kernel beschrieben und somit das Prinzip des CFS exemplifiziert. Am Ende wird ein Vergleich der Scheduler CFS und O(1) hinsichtlich Fairness und Interaktivität exzerpiert. \\
 Abschließend wird dieser Artikel in Abschnitt \ref{s:end} zusammengefasst.
 
