@@ -3,19 +3,19 @@ Die wichtigste Aufgabe eines Schedulers ist die Verteilung von knappen Ressource
 Um dies zu realisieren, wurden bereits viele Anwendungen in Theorie und Praxis entwickelt.
 Eine sehr bekannte Entwicklung beruht auf der Idee, jedem Klienten ein eigenes Gewicht zu zuweisen, welche dann je nach Höhe zum Gebrauch der begrenzten Ressource berechtigt.
 
-Diese Verfahren, welches unter anderem unter dem Namen \textit{Proportional Share Scheduling} bekannt sind, wurden bereits vor einigen Jahrzehnten entwickelt und fanden dann z.B. in einem gewichtetem Round-Robin Verfahren Anwendung. Auch unter UNIX fand dieses Verfahren schnell als Scheduler Anwendung mit Hilfe einer Priorität-Steuer\-ung. Dieses Verfahren ist schnell und benötigt immer eine konstante Zeit zum Auswählen des nächsten Klienten. 
+Diese Verfahren, welche unter anderem unter dem Namen \textit{Proportional-Share-Scheduling} bekannt sind, wurden bereits vor einigen Jahrzehnten entwickelt und fanden dann z.B. in einem gewichtetem Round-Robin Verfahren Anwendung. Auch unter UNIX fand dieses Verfahren  mit Hilfe einer Prioritätsteuer\-ung als Scheduler Anwendung. Diese Verfahren sind schnell und benötigen immer eine konstante Zeit zum Auswählen des nächsten Klienten. 
 
-Die Proportional-Scheduler können die Verteilung der Ressource hauptsächlich über zwei Wege erreichen:
+Die Proportional-Share-Scheduler können die Verteilung der Ressource hauptsächlich über zwei Wege erreichen:
 \begin{enumerate}
-	\item Über die Frequenz. Das heißt, wie oft bekommt ein Klient die Zuteilung. Dies kann zum Beispiel realisiert werden, mit einer entsprechenden Positionierung in einer Warteschlange.
+	\item Über die Frequenz. Das heißt, wie oft bekommt ein Klient die Zuteilung. Dies kann zum Beispiel mit einer entsprechenden Positionierung in einer Warteschlange realisiert werden.
 	\item Über die Zeit. Dafür wird das Zeitquantum, welches einem Klienten zur Verfügung gestellt wird, entsprechend verlängert oder verkürzt.
 \end{enumerate}
 
-Wird die Scheduler-Logik mit Hilfe von Prioritäten gesteuert, entsteht schnell ein entscheidendes Problem. Die Klienten mit den höchsten Prioritäten werden bevorzugt und bei anderen Klienten mit niedrigeren Prioritäten kann der Fall auftreten, dass sie keine Zuteilung mehr bekommen und somit \textit{verhungern}.
-Um diese Problematik zu umgehen, wurde mit der Entwicklung alternativer Scheduling Algorithmen begonnen. Ein wichtiges Ziel sollte sein, eine gewisse Fairness unter den Klienten zu erreichen. Damit erhielten diese Verfahren den Namen \textit{Fair Scheduler}. Mit Hilfe dieser Art von Schedulern soll das Problem der ungleichmäßigen bzw. ungerechten Verteilung der Prioritätssteuerung behoben werden.
+Wird die Logik des Schedulers mit Hilfe von Prioritäten gesteuert, entsteht schnell ein entscheidendes Problem. Die Klienten mit den höchsten Prioritäten werden bevorzugt und bei anderen Klienten mit niedrigeren Prioritäten kann der Fall auftreten, dass sie keine Zuteilung mehr bekommen und somit \textit{verhungern}.
+Um diese Problematik zu umgehen, wurde mit der Entwicklung alternativer Schedule-Algorithmen begonnen. Ein wichtiges Ziel sollte bei einigen Algorithmen sein, eine gewisse Fairness bei der Verteilung unter den Klienten zu erreichen. Damit erhielten diese Verfahren den Namen \textit{Fair Scheduler}. Mit Hilfe dieser Art von Schedulern soll das Problem der ungleich\-mäßigen bzw. ungerechten Verteilung vorheriger Scheduler mit Prioritäts\-steuer\-ung  behoben werden.
 
 Eine perfekte Fairness kann nur gebildet werden, wenn die Klienten bewertet werden und aufgrund dieser Bewertung ihre Zuteilung auf die Ressource erhalten.
-Eine Möglichkeit für eine solche Bewertung ist ein Vergleich von verbrauchten Kontingent des Klienten zu Verbrauchten Kontingent aller aktiven Klienten in einem bestimmten Zeitraum. 
+Eine Möglich\-keit für eine solche Bewertung ist ein Vergleich von verbrauchten Kontingent des Klienten zu verbrauchten Kontingent aller aktiven Klienten in einem bestimmten Zeitraum. 
 Dies wird nach \cite{usenix} wie folgt definiert:
 
 \begin{equation}
@@ -25,7 +25,7 @@ W_{o,A}(t_1,t_2) = (t_2-t_1) \frac{S_A}{\sum_i S_i}
 
 Hierbei ist $S_A$ der proportionale Anteil des Klienten $A$, $S_i$ die Anteile aller aktiven Klienten und $W_{o,A}$ stellt als Ergebnis eine optimale proportionale Menge des Klienten in der Zeit zwischen $t1$ und $t2$ dar.
 
-Im idealen System, wenn alle Klienten ihre Zuweisung gleichzeitig erhalten und ihren geforderten Ressourcenanspruch simultan verbrauchen könnten, wäre es möglich die obige Gleichung für alle Klienten entsprechend aufrecht zu erhalten.
+Im idealen System, wenn alle Klienten ihre Zuweisung gleichzeitig erhalten und ihren geforderten Ressourcenanspruch simultan verbrauchen könnten, wäre es möglich die obige Gleichung für alle Klienten entsprechend dauerhaft aufrecht zu erhalten.
 Damit wäre eine \textit{completely-fair} Verteilung gegeben. Allerdings ist dies in der Praxis nicht möglich, da immer nur ein Klienten für die Ressource die Zuteilung bekommen kann.
 Um eine Bewertung der aktuellen angewendeten Strategie zur idealen \textit{completely-fair} Strategie zu erhalten, kann ein sogenannter \textit{service time error} mit folgender Formel berechnet werden:
 
@@ -37,7 +37,8 @@ E_A(t_1,t_2) = W_{S,A}(t_1,t_2)-W_{o,A}(t_1,t_2)
 Diese Differenz gibt den Abstand vom gegebenen Algorithmus bzw. der aktuellen Strategie zum optimalen Algorithmus an.
 Ist der Abstand positiv, so bekommt der aktuelle Klient mehr Zuteilung als er mit dem idealen Algorithmus bekommen würde. Ist der Abstand negativ, so erhält der Klient im Vergleich weniger.
 
-Je kleiner der Wert aus Formel \ref{eq:error_fairness}, desto mehr erreicht der aktuelle Algorithmus die Funktionsweise des optimalen \textit{completely-fair} Algorithmus.
+Je mehr sich $E_A$ dem Wert 0 nähert, desto mehr erreicht der aktuelle Algorithmus die Funktionsweise des optimalen \textit{completely-fair} Algorithmus.
+%Je mehr der Wert aus Formel \ref{eq:error_fairness} die 0 erreicht, desto mehr erreicht der aktuelle Algorithmus die Funktionsweise des optimalen \textit{completely-fair} Algorithmus.
 %Ziel in einer praktischen Lösung im Bezug auf \glqq completely-fair\grqq{} soll es sein, diesen Abstand
  
 
