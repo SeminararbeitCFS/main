@@ -1,7 +1,7 @@
 \subsection{Das completely-fair Prinzip}\label{s:fair}
 Die wichtigste Aufgabe eines Schedulers ist die Verteilung von knappen Ressourcen unter einer Menge von Klienten. 
 Um dies zu realisieren, wurden bereits viele Anwendungen in Theorie und Praxis entwickelt.
-Eine sehr bekannte Entwicklung beruht auf der Idee, jedem Klienten ein eigenes Gewicht zu zuweisen, welche dann je nach Höhe zum Gebrauch der begrenzten Ressource berechtigt.
+Eine sehr bekannte Entwicklung beruht auf der Idee, jedem Klienten ein eigenes Gewicht zuzuweisen, welches dann je nach Höhe zum Gebrauch der begrenzten Ressource berechtigt.
 
 Diese Verfahren, welche unter anderem unter dem Namen \textit{Proportional-Share-Scheduling} bekannt sind, wurden bereits vor einigen Jahrzehnten entwickelt und fanden dann z.B. in einem gewichtetem Round-Robin Verfahren Anwendung. Auch unter UNIX fand dieses Verfahren  mit Hilfe einer Prioritätsteuer\-ung als Scheduler Anwendung. Diese Verfahren sind schnell und benötigen immer eine konstante Zeit zum Auswählen des nächsten Klienten. 
 
@@ -26,7 +26,7 @@ W_{o,A}(t_1,t_2) = (t_2-t_1) \frac{S_A}{\sum_i S_i}
 Hierbei ist $S_A$ der proportionale Anteil des Klienten $A$, $S_i$ die Anteile aller aktiven Klienten und $W_{o,A}$ stellt als Ergebnis eine optimale proportionale Menge des Klienten in der Zeit zwischen $t1$ und $t2$ dar.
 
 Im idealen System, wenn alle Klienten ihre Zuweisung gleichzeitig erhalten und ihren geforderten Ressourcenanspruch simultan verbrauchen könnten, wäre es möglich die obige Gleichung für alle Klienten entsprechend dauerhaft aufrecht zu erhalten.
-Damit wäre eine \textit{completely-fair} Verteilung gegeben. Allerdings ist dies in der Praxis nicht möglich, da immer nur ein Klienten für die Ressource die Zuteilung bekommen kann.
+Damit wäre eine \textit{completely-fair} Verteilung gegeben. Allerdings ist dies in der Praxis nicht möglich, da immer nur ein Klient für die Ressource die Zuteilung bekommen kann.
 Um eine Bewertung der aktuellen angewendeten Strategie zur idealen \textit{completely-fair} Strategie zu erhalten, kann ein sogenannter \textit{service time error} mit folgender Formel berechnet werden:
 
 \begin{equation}

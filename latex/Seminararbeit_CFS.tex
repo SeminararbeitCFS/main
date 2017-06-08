@@ -74,16 +74,16 @@ Abschließend wird dieser Artikel in Abschnitt \ref{s:end} zusammengefasst.
 \input{sections/rb_tree}
 \input{sections/cf_principe}
 
-
+\newpage
 \section{Der Completely-Fair-Scheduler}\label{s:cfsmain}
-Ziel dieses Abschnittes ist es, dem Leser ein grundlegendes Verständnis für die Funktionsweise des CFS zu vermitteln. Es wird konkretisiert, wie dieser Scheduler einen perfekten Multitasking-Prozessor approximiert und welche Datenstrukturen und Funktionen dafür in der Programmiersprache C im Linux-Kernel implementiert sind. Abschließend wird der CFS in den Punkten Fairness und Interaktivität mit seinem Vorgänger verglichen.
+%Ziel dieses Abschnittes ist es, dem Leser ein grundlegendes Verständnis für die Funktionsweise des CFS zu vermitteln. Es wird konkretisiert, wie dieser Scheduler einen perfekten Multitasking-Prozessor approximiert und welche Datenstrukturen und Funktionen dafür in der Programmiersprache C im Linux-Kernel implementiert sind. Abschließend wird der CFS in den Punkten Fairness und Interaktivität mit seinem Vorgänger verglichen.
 
 \input{sections/aufbau}
 \input{sections/c_structs}
 \input{sections/comp_to_O1}
 
 \section{Zusammenfassung}\label{s:end}
-In dieser Arbeit sind die grundlegenden Eigenschaften und der Aufbau des CFS-Schedulers dargestellt. Es wird gezeigt, dass der CFS-Scheduler mit Hilfe effizienter Algorithmen, einfachen Prinzipien und der Datenstruktur Rot-Schwarz-Baum versucht, immer eine faire Verteilung unter den aufzuführenden Prozessen zu erreichen. Zugleich wird dabei auch weiterhin eine annähernde Multitask-Um\-gebung beibehalten. Im Vergleich zum O(1)-Scheduler wird bewiesen, dass der CFS das Kriterium Fairness deutlich verfeinert. Darüber hinaus wird aufgezeigt, dass der CFS mit einer besseren Fairness trotzdem gute Latenzzeiten im Bereich von interaktiven Aufgaben aufweist ohne diese explizit zu bevorzugen.
+In dieser Arbeit sind die grundlegenden Eigenschaften und der Aufbau des CFS-Schedulers dargestellt. Es wird gezeigt, dass der CFS-Scheduler mit Hilfe effizienter Algorithmen, einfachen Prinzipien und der Datenstruktur Rot-Schwarz-Baum versucht, immer eine faire Verteilung unter den auszuführenden Prozessen zu erreichen. Zugleich wird dabei auch weiterhin eine annähernde Multitask-Um\-gebung beibehalten. Im Vergleich zum O(1)-Scheduler wird bewiesen, dass der CFS das Kriterium Fairness deutlich verfeinert. Darüber hinaus wird aufgezeigt, dass der CFS mit einer besseren Fairness trotzdem gute Latenzzeiten im Bereich von interaktiven Aufgaben aufweist ohne diese explizit zu bevorzugen.
 
 Ein großes Problem stellt sich allerdings heraus, wenn der CFS-Scheduler mit zu vielen Prozessen konfrontiert wird. Über\-steigt die Menge der Anfragen einen gewissen Rahmen, so wird sich der Scheduler mehr und mehr den  \textit{com\-pletely-fair} Prinzipien entfernen.  
 
