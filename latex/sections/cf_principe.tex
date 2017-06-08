@@ -3,15 +3,15 @@ Die wichtigste Aufgabe eines Schedulers ist die Verteilung von knappen Ressource
 Um dies zu realisieren, wurden bereits viele Anwendungen in Theorie und Praxis entwickelt.
 Eine sehr bekannte Entwicklung beruht auf der Idee, jedem Klienten ein eigenes Gewicht zu zuweisen, welche dann je nach Höhe zum Gebrauch der begrenzten Ressource berechtigt.
 
-Diese Verfahren, welches unter anderem unter dem Namen \textit{Proportional Share Scheduling} bekannt sind, wurden bereits vor einigen Jahrzehnten entwickelt und fanden dann z.B. in einem gewichtetem Round - Robin Verfahren Anwendung. Auch unter UNIX fand dieses Verfahren schnell als Scheduler Anwendung mit Hilfe einer Priorität-Steuer\-ung. Dieses Verfahren ist schnell und benötigt immer eine konstante Zeit zum Auswählen des nächsten Klienten. 
+Diese Verfahren, welches unter anderem unter dem Namen \textit{Proportional Share Scheduling} bekannt sind, wurden bereits vor einigen Jahrzehnten entwickelt und fanden dann z.B. in einem gewichtetem Round-Robin Verfahren Anwendung. Auch unter UNIX fand dieses Verfahren schnell als Scheduler Anwendung mit Hilfe einer Priorität-Steuer\-ung. Dieses Verfahren ist schnell und benötigt immer eine konstante Zeit zum Auswählen des nächsten Klienten. 
 
-Die Proportional - Scheduler können die Verteilung der Ressource hauptsächlich über zwei Wege erreichen:
+Die Proportional-Scheduler können die Verteilung der Ressource hauptsächlich über zwei Wege erreichen:
 \begin{enumerate}
 	\item Über die Frequenz. Das heißt, wie oft bekommt ein Klient die Zuteilung. Dies kann zum Beispiel realisiert werden, mit einer entsprechenden Positionierung in einer Warteschlange.
 	\item Über die Zeit. Dafür wird das Zeitquantum, welches einem Klienten zur Verfügung gestellt wird, entsprechend verlängert oder verkürzt.
 \end{enumerate}
 
-Wird die Scheduler - Logik mit Hilfe von Prioritäten gesteuert, entsteht schnell ein entscheidendes Problem. Die Klienten mit den höchsten Prioritäten werden bevorzugt und bei anderen Klienten mit niedrigeren Prioritäten kann der Fall auftreten, dass sie keine Zuteilung mehr bekommen und somit \textit{verhungern}.
+Wird die Scheduler-Logik mit Hilfe von Prioritäten gesteuert, entsteht schnell ein entscheidendes Problem. Die Klienten mit den höchsten Prioritäten werden bevorzugt und bei anderen Klienten mit niedrigeren Prioritäten kann der Fall auftreten, dass sie keine Zuteilung mehr bekommen und somit \textit{verhungern}.
 Um diese Problematik zu umgehen, wurde mit der Entwicklung alternativer Scheduling Algorithmen begonnen. Ein wichtiges Ziel sollte sein, eine gewisse Fairness unter den Klienten zu erreichen. Damit erhielten diese Verfahren den Namen \textit{Fair Scheduler}. Mit Hilfe dieser Art von Schedulern soll das Problem der ungleichmäßigen bzw. ungerechten Verteilung der Prioritätssteuerung behoben werden.
 
 Eine perfekte Fairness kann nur gebildet werden, wenn die Klienten bewertet werden und aufgrund dieser Bewertung ihre Zuteilung auf die Ressource erhalten.
@@ -19,7 +19,7 @@ Eine Möglichkeit für eine solche Bewertung ist ein Vergleich von verbrauchten 
 Dies wird nach \cite{usenix} wie folgt definiert:
 
 \begin{equation}
-W_{o,A}(t_1,t_2) = (t_2 - t_1) \frac{S_A}{\sum_i S_i}
+W_{o,A}(t_1,t_2) = (t_2-t_1) \frac{S_A}{\sum_i S_i}
 \label{eq:perfect_fairness}
 \end{equation}
 
@@ -30,7 +30,7 @@ Damit wäre eine \textit{completely-fair} Verteilung gegeben. Allerdings ist die
 Um eine Bewertung der aktuellen angewendeten Strategie zur idealen \textit{completely-fair} Strategie zu erhalten, kann ein sogenannter \textit{service time error} mit folgender Formel berechnet werden:
 
 \begin{equation}
-E_A(t_1,t_2) = W_{S,A}(t_1,t_2) - W_{o,A}(t_1,t_2)
+E_A(t_1,t_2) = W_{S,A}(t_1,t_2)-W_{o,A}(t_1,t_2)
 \label{eq:error_fairness}
 \end{equation}
 
