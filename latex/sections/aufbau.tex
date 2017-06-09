@@ -59,7 +59,7 @@ Hierbei ist \textit{se$\rightarrow$load.weight} das Gewicht des Prozesses aus de
 
    
 Die Variable \textit{cfs\_rq$\rightarrow$load.weight} ist die Summe aller Gewichte der momentan aktiven Prozesse der Warte\-schlan\-ge.
-\textit{period} ist der Zeitschlitz, für welchen eine Bewertung mit Basis auf den idealen Zeitscheiben der aktuellen Prozesse vorgenommen werden soll. Dieser Wert ist nicht konstant und einstellbar. Erreicht z.B. die Anzahl der lauf\-fähigen Prozesse eine kritische Grenze, so muss der Wert von \textit{period} erhöht werden. 
+\textit{period} ist der Zeitschlitz, für welchen eine Bewertung mit Basis auf den idealen Zeitscheiben der aktuellen Prozesse vorgenommen werden soll. Dieser Wert ist nicht konstant einstellbar. Erreicht z.B. die Anzahl der lauf\-fähigen Prozesse eine kritische Grenze, so muss der Wert von \textit{period} erhöht werden. 
 Diese Grenze wird im Kernel mit Hilfe der Variable \textit{nr\_latency} ermittelt. Diese Variable setzt sich aus dem Verhätlnis von \textit{period} und der minmalen Zeitscheibe für einen Prozess zusammen \cite{paperfairness}.
 
 \begin{equation}
@@ -69,7 +69,7 @@ nr\_latency = \frac{sysctl\_sched\_latency}{sysctl\_sched\_min\_granularity}
 
 Somit gibt die Variable \textit{nr\_latency} die maximal mögliche Anzahl von Prozessen mit gegebenen Parametern vor. Über\-steigt nun die Anzahl der aktuell lauffähigen Prozesse diesen Wert, so muss der Wert von \textit{period}, bzw. in Formel \ref{eq:nr_latency} ensprechend \textit{sysctl\_sched\_latency}, erhöht werden.
 
-Im anschließendem Schritt soll eine faire Auswahl auf den nächsten ausführbaren Prozess getroffen werden. Dies geschieht mit einer weiteren Bewertung der Prozesse im Bezug zu ihrer bereits ausgeführten Zeit. 
+Im anschließenden Schritt soll eine faire Auswahl auf den nächsten ausführbaren Prozess getroffen werden. Dies geschieht mit einer weiteren Bewertung der Prozesse im Bezug zu ihrer bereits ausgeführten Zeit. 
 Dazu dient im CFS-Algorithmus die Variable \textit{virtual runtime}. In \cite{mjones} wird die \textit{virtual runtime} definiert als Menge der CPU-Zeit, die einer gewissen Aufgabe zugeordnet worden ist. Je kleiner der Wert für \textit{virtual runtime} ist, desto höher ist die Dringlichkeit dieser Aufgabe den Prozessor für sich zugewiesen zu bekommen. Ebenso beschreibt \cite{mjones} die Funktionalität von CFS, dass eine gewisse \textit{Sleeper-Fairness} implementiert ist: Aufgaben, die zu einem Zeitpunkt nicht lauffähig sind (z.B. beim Warten auf I/O"--Operationen) erhalten ei\-nen vergleichbaren Anteil am Prozessor, wenn sie diesen benö"-tigen.\\
 Die \textit{virtual runtime}-Variable wird aus dem Verhältnis von bereits absolvierter Zeit zu dem ermitteltem Gewicht des Prozesses gebildet und ist für die Dauer der Ausführungs"-zeit für jeden Prozess ständig steigend \cite{rlove}. 
 
@@ -85,7 +85,7 @@ Hierbei stellt \textit{delta\_exec} die bereits ausgeführte Zeit der jeweiligen
 Mit Hilfe des ersten Terms aus Formel \ref{eq:vruntime} wird die aktuelle virtuelle Laufzeit des jeweiligen Prozesses bestimmt. Der zweite Term dient zur Bestimmung der allgemeinen virtuelle Laufzeit, welche jeder Prozess nach Ablauf der Periodenzeit \textit{period} für diesen Zeitabschnitt erreicht haben soll. 
 %Dieser Wert soll nach Ablauf der Periodenzeit für alle Prozess gleich sein.
 
-Mit dieser neuen Variablen können nun die Prozesse entsprechend ihrer Laufzeit und ihrem Gewicht bewertet und eine Rangfolge erstellt werden. Dazu wird an dieser Stelle der Rot-Schwarz-Baum [s.Kapitel \ref{s:rb_tree}] verwendet. Die Prozesse werden nach ihrem \textit{virtual runtime}-Wert in den Baum einsortiert. Dabei steht der Prozess mit der kleinsten \textit{virtual runtime} am weitesten links und kann nun durch den Scheduler ohne lange Suchzeiten ermittelt und als nächster auszuführender Prozess ausgewählt werden. 
+Mit \textit{vruntime} können nun die Prozesse entsprechend ihrer Laufzeit und ihrem Gewicht bewertet und eine Rangfolge erstellt werden. Dazu wird an dieser Stelle der Rot-Schwarz-Baum [s.Kapitel \ref{s:rb_tree}] verwendet. Die Prozesse werden nach ihrem \textit{virtual runtime}-Wert in den Baum einsortiert. Dabei steht der Prozess mit der kleinsten \textit{virtual runtime} am weitesten links und kann nun durch den Scheduler ohne lange Suchzeiten ermittelt und als nächster auszuführender Prozess ausgewählt werden. 
 
 Stehen zum Beispiel drei lauffähige Prozesse  mit \textit{nice}-Werten von  $0$, $1$ und $2$ und entsprechenden Gewichten von $1024$, $820$ und $655$ in einer Warteschlange für einen Prozessor, dann ergeben sich die idealen Zeitscheiben bei einer Periode von 20ms mit Formel \ref{eq:slice} zu $8.2ms$, $6.6ms$ und $5.2ms$. Ermittelt man nun dazu passend die \textit{virtual runtime}-Werte und zwar so, dass jeder Prozess seine Zuteilung für diese Periode vollständig ausgenutzt hätte, so wird ersichtlich, dass alle Prozesse nun den gleichen \textit{virtual runtime}-Wert von ca. $8*10^{-6}$ besitzen. Damit wird eine faire Aufteilung mit Be\-rück\-sichtigung der \textit{Prioritäten} gewährt.
 

@@ -1,10 +1,10 @@
 \subsection{Parameter von Schedulern}
 \textbf{Prozessarten}\\
-In der Prozessverwaltung des Schedulers sollen insbesondere zwei Hauptprozessarten berücksichtigt werden. Zum einen gibt es I/O gebundene Prozesse. Diese Prozesse warten stehts auf Eingaben bzw. Ereignisse und führen danach entsprechend Code aus. Daher kann man davon ausgehen, dass diese Prozesse immer nur relativ kurzläufig sind und danach in einer Art Ruhemodus auf weitere Instruktionen warten. Als Beispiel sei ein Graphical User Interface (GUI) zu nennen, welches hauptsächlich nur durch Interaktionen eines Benutzers zur Arbeit aufgefordert wird.
+In der Prozessverwaltung des Schedulers sollen insbesondere zwei Hauptprozessarten berücksichtigt werden. Zum einen gibt es I/O gebundene Prozesse. Diese Prozesse warten stehts auf Eingaben bzw. Ereignisse und führen danach entsprechenden Code aus. Daher kann man davon ausgehen, dass diese Prozesse immer nur relativ kurzläufig sind und danach in einer Art Ruhemodus auf weitere Instruktionen warten. Als Beispiel sei ein Graphical User Interface (GUI) zu nennen, welches hauptsächlich durch Interaktionen eines Benutzers zur Arbeit aufgefordert wird.
 
 Die zweite Prozessart, welche vom Scheduler behandelt werden muss, ist die prozessorgebundene. Diese Prozesse sind hauptsächlich damit beschäftigt Algorithmen auszuführen und be\-nötigen daher viel Prozessorzeit. Ausserdem laufen diese Prozesse meist solange, bis sie unterbrochen werden.
 Es gibt aber auch Mischformen aus beiden Arten. Ein gutes Beispiel ist das X-Window System unter Linux. Dies soll eine grafische Interaktivitätsumgebung für den Benutzer bereitstellen und muss aber gleichzeitig im Hintergrund einige Berechnungen durchführen, um zum Beispiel eine gewisse Anwenderfreundlichkeit gewähr\-leis\-ten zu können. 
-Auch das Wörterbuch des bekannten Android Betriebssystem stellt eine Mischform beider Prozessarten da. Schon während der Benutzer die einzelnen Buchstaben eingibt, berechnet der passende Prozess im Hintergrund eine Vorschau mit Wörtern, um eine Auto\-ver\-voll\-ständigung des Wortes zu erstellen.
+Auch das Wörterbuch des bekannten Betriebssystems \textit{Android} stellt eine Mischform beider Prozessarten da. Schon während der Benutzer die einzelnen Buchstaben eingibt, berechnet der passende Prozess im Hintergrund eine Vorschau mit Wörtern, um eine Auto\-ver\-voll\-ständigung des Wortes zu erstellen.
 Für den Scheduler entstehen in diesem Bereich damit auch zwei wichtige Anforderungen. Zum einem soll er eine schnelle Antwortzeit auf Interaktionen eines Users ermöglichen und zum andern einen hohen Durchsatz für prozessorgebundene Prozesse bereitstellen.
 
 \textbf{Prioritäten}\\
@@ -22,8 +22,8 @@ Aufgabe des Schedulers ist es an dieser Stelle mit Hilfe entsprechender Regeln s
 Werden die Zeitscheiben zu groß bzw. zu lang gewählt, dann leidet die Interaktionsmöglichkeit für den Benutzer und außerdem kann dann der Anschein der Parallel\-ver\-arbeitung nicht mehr geweckt werden.
 Werden sie zu klein gewählt, dann ist der Prozessor nur noch mit den Umschaltvorgängen beschäftigt und die allgemeine Systemperformance wird erheblich gesenkt.
 
-Auch der oben bereits erwähnt Unterschied zwischen I/O und prozessorgebunden Prozessen spielt eine wesentlich Rolle bei der Festlegung der Zeitscheiben. I/O Prozesse benötigen meist nur eine geringe Zeitscheibe, wohingegen die prozessorgebundenen eine größere Zeitscheibe bekommen sollten. 
-Als Standardwert hat sich eine dieser Stelle bei vielen Betriebssystemen ein Wert von kleiner als 10ms etabliert \cite{rlove}, da damit unter anderem eine gute Inter\-ak\-ti\-vitäts\-mög\-lich\-keit bewahrt wird.
+Auch der oben bereits erwähnte Unterschied zwischen I/O und prozessorgebunden Prozessen spielt eine wesentlich Rolle bei der Festlegung der Zeitscheiben. I/O Prozesse benötigen meist nur eine geringe Zeitscheibe, wohingegen die prozessorgebundenen eine größere Zeitscheibe bekommen sollten. 
+Als Standardwert hat sich an dieser Stelle bei vielen Betriebssystemen ein Wert \textless10ms etabliert \cite{rlove}, da damit unter anderem eine gute Inter\-ak\-ti\-vitäts\-mög\-lich\-keit bewahrt wird.
 %
 %Der CF-Scheduler verteilt oder berechnet keine direkten Zeitscheiben an die Prozesse. Bei diesem Verfahren wird ein Anteil der CPU berechnet. Die Menge an Zeit, welche ein Prozess zugeteilt bekommt, ergibt sich aus einer Funktion, welche die Gesamtbelastung eines System integriert.
 %Dieser Anteil wird direkt beeinflusst durch das Gewicht jedes Prozesses, welches durch den \textit{nice}-Wert ermittelt wird. Hoher Nice-Wert bedeutet weiterhin, dass der Anteil des Prozessor für diesen Prozess vermindert wird. Ein niedriger \textit{nice}-Wert sorgt für eine Erweiterung des Anteil für die CPU.
