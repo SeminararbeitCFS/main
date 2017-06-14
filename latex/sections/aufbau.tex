@@ -12,7 +12,7 @@ Das Ziel eines  Completely-Fair-Schedulers{} soll es sein, eine faire Aufteilung
 Im einfachsten Fall, wenn keine Prioritäten unter den Prozessen vergeben werden, ist eine perfekte Aufteilung der Ressource dann gegeben, wenn zu jedem Zeitpunkt jeder Prozess immer eine Zuteilung im Verhältnis $1/n$ erhält, wobei $n$ die Menge aller Prozesse darstellt.
 Bei zwei laufenden Prozessen heißt das, dass beide Prozesse zeitgleich mit jeweils 50 Prozent der Prozessorressource arbeiten. Dies ist in der Praxis allerdings nicht möglich, da jeder Prozessor immer nur eine Aufgabe zu einem Zeitpunkt bearbeiten kann.
 
-Unter Linux und unixartigen Systemen werden daher den beiden Prozessen Zeitscheiben zugeordnet und es findet eine sequentielle Abarbeitung statt. Anschließend werden die Prozesse abwechselnd mit jeweils 100 Prozent Prozessorzuteilung entsprechend ihrer Zeitscheibe verarbeitet.
+Unter Linux und unixartigen Systemen werden daher den beiden Prozessen Zeitscheiben zugeordnet und es findet eine sequentielle Abarbeitung statt. Anschließend werden die Prozesse abwechselnd mit jeweils der maximal zur Verfügung stehenden Prozessorressource entsprechend ihrer Zeitscheibe verarbeitet.
 
 %Um mit diesem Prinzip eine Annäherung an einen perfekten Multitasking-Prozessor zu erreichen, müsste man die Zuteilung für jeden Prozess in unendlich kleine Zeitscheiben zerlegen und alternierend dem Prozessor zuweisen.
 Je kleiner die Zeitscheiben gewählt werden, desto mehr wird ein nahezu zeitgleiches Abarbeiten der anstehenden Prozesse erreicht.
@@ -57,7 +57,11 @@ Hierbei ist \textit{se$\rightarrow$load.weight} das Gewicht des Prozesses aus de
 \end{center}
 \end{table}
 
-   
+
+In dieser Tabelle ist die entsprechende Zuweisung vom \textit{nice}-Wert zum Gewicht dargestellt. 
+
+Dabei sind pro Zeile immer fünf Zuweisungen von \textit{nice}-Werten zu Gewichten zu sehen, welche bei dem \textit{nice}-Wert der ersten Spalte starten und nach rechts immer um eins inkrementiert wird. 
+
 Die Variable \textit{cfs\_rq$\rightarrow$load.weight} ist die Summe aller Gewichte der momentan aktiven Prozesse der Warte\-schlan\-ge.
 \textit{period} ist der Zeitschlitz, für welchen eine Bewertung mit Basis auf den idealen Zeitscheiben der aktuellen Prozesse vorgenommen werden soll. Dieser Wert ist nicht konstant einstellbar. Erreicht z.B. die Anzahl der lauf\-fähigen Prozesse eine kritische Grenze, so muss der Wert von \textit{period} erhöht werden. 
 Diese Grenze wird im Kernel mit Hilfe der Variable \textit{nr\_latency} ermittelt. Diese Variable setzt sich aus dem Verhätlnis von \textit{period} und der minmalen Zeitscheibe für einen Prozess zusammen \cite{paperfairness}.

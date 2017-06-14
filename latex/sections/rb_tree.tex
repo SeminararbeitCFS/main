@@ -41,7 +41,7 @@ Nach \cite{tcormen} müssen folgende Regeln eingehalten werden, damit ein Rot-Sc
 	\item Für jeden Knoten enthalten alle einfachen Pfade, die an diesem Knoten starten und in einem Blatt des Teilbaumes dieses Knotens enden, die gleiche Anzahl schwarzer Knoten. 
 \end{enumerate}
 
-Wie bereits Thomas H. Cormen in \cite{tcormen} beweist, kann ein Baum, welcher nach diesen Regeln erstellt wird, eine maximale Höhe von $2lg(n+1)$ erreichen. Damit ergeben sich die Laufzeiten für verschiedene Operation, wie zum Beispiel das Suchen im Baum, auf einen Maximalwert von $O(lg\, n)$.
+Wie bereits Thomas H. Cormen in \cite{tcormen} beweist, kann ein Baum, welcher nach diesen Regeln erstellt wird, eine maximale Höhe von $O(\log n)$ erreichen. Dem entsprechend ergeben sich dann die maximalen Laufzeiten für verschiedene Operation, wie zum Beispiel das Suchen im Baum, auf einen Maximalwert der oben angegebenen Höhe.
 
 Beim Einfügen oder Löschen in den Baum werden Verbindungen oder Knoten verändert. Dabei kann es passieren, dass der Baum wieder in ein Ungleichgewicht gerät. 
 Um dieser Problematik entgegen zu wirken, werden spezielle Einfüge- beziehungsweise Lösch\-operationen angewendet, welche so konstruiert sind, dass immer die fünf oben genannten Regeln eingehalten werden. 
