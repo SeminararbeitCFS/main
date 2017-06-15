@@ -41,7 +41,8 @@ Nach \cite{tcormen} müssen folgende Regeln eingehalten werden, damit ein Rot-Sc
 	\item Für jeden Knoten enthalten alle einfachen Pfade, die an diesem Knoten starten und in einem Blatt des Teilbaumes dieses Knotens enden, die gleiche Anzahl schwarzer Knoten. 
 \end{enumerate}
 
-Wie bereits Thomas H. Cormen in \cite{tcormen} beweist, kann ein Baum, welcher nach diesen Regeln erstellt wird, eine maximale Höhe von $O(\log n)$ erreichen. Dem entsprechend ergeben sich dann die maximalen Laufzeiten für verschiedene Operation, wie zum Beispiel das Suchen im Baum, auf einen Maximalwert der oben angegebenen Höhe.
+Wie bereits Thomas H. Cormen in \cite{tcormen} beweist, ergeben sich die maximalen Laufzeiten für verschiedene Operation, wie zum Beispiel das Suchen im Baum, auf einen Höchstwert von $O(\log n)$. 
+%kann ein Baum, welcher nach diesen Regeln erstellt wird, eine maximale Höhe von $2\log_2(n + 1) $ erreichen. Dem entsprechend ergeben sich dann die maximalen Laufzeiten für verschiedene Operation, wie zum Beispiel das Suchen im Baum, auf einen Höchstwert von $O(\log n)$.
 
 Beim Einfügen oder Löschen in den Baum werden Verbindungen oder Knoten verändert. Dabei kann es passieren, dass der Baum wieder in ein Ungleichgewicht gerät. 
 Um dieser Problematik entgegen zu wirken, werden spezielle Einfüge- beziehungsweise Lösch\-operationen angewendet, welche so konstruiert sind, dass immer die fünf oben genannten Regeln eingehalten werden. 
@@ -49,5 +50,9 @@ Um dieser Problematik entgegen zu wirken, werden spezielle Einfüge- beziehungsw
 So müssen innerhalb dieser Einfüge- oder Lösch\-ope\-ra\-ti\-on\-en zum Beispiel Rotationen von Knoten unter bestimmten Bedingung durchgeführt oder die Farben beziehungsweise auch die Zeigerstruktur geändert werden.
 
 Werden die fünf Regeln unter allen Bedingungen und zu jeder Zeit eingehalten, so kann immer die maximale Laufzeit garantiert werden und außerdem können der kleinste und der größte Schlüssel immer direkt auf der linkesten beziehungsweise auf der rechtesten Seite gefunden werden.
+
+Der Rot-Schwarz-Baum hat im Vergleich zu anderen balancierten Baumvarianten eine niedrigere Operationzeit, da er z.B. wenige Rotationen nach Einfüge- bzw. Lösch\-vorgängen ausführen muss.
+Daher ist er für Anwendungen mit einer hohen Zugriffsrate, wie z.B. dem CFS-Scheduler, zu bevorzugen.
+
 %Mit den Regeln von RED-BLACK wird mit Hilfe von zum Beispiel Rotationen um das den Parent Knoten, immer für das richtige Gleichgewicht gesorgt.
 
