@@ -2,8 +2,7 @@ __update_curr(struct cfs_rq *cfs_rq, struct sched_entity *curr,unsigned long del
 {
 unsigned long delta_exec_weighted;
 
-schedstat_set(curr->statistics.exec_max,
-	max((u64)delta_exec, curr->statistics.exec_max));
+schedstat_set(curr->statistics.exec_max,max((u64)delta_exec, curr->statistics.exec_max));
 
 curr->sum_exec_runtime += delta_exec;
 schedstat_add(cfs_rq, exec_clock, delta_exec);
