@@ -12,7 +12,7 @@ Das Ziel eines  Completely-Fair-Schedulers{} soll es sein, eine faire Aufteilung
 Im einfachsten Fall, wenn keine Prioritäten unter den Prozessen vergeben werden, ist eine perfekte Aufteilung der Ressource dann gegeben, wenn zu jedem Zeitpunkt jeder Prozess immer eine Zuteilung im Verhältnis $1/n$ erhält, wobei $n$ die Menge aller Prozesse darstellt.
 Bei zwei laufenden Prozessen heißt das, dass beide Prozesse zeitgleich mit jeweils 50 Prozent der Prozessorressource arbeiten. Dies ist in der Praxis allerdings nicht möglich, da jeder Prozessor immer nur eine Aufgabe zu einem Zeitpunkt bearbeiten kann.
 
-Unter Linux und unix\-artigen Systemen werden daher den beiden Prozessen Zeitscheiben zugeordnet und es findet eine sequentielle Abarbeitung statt. Anschließend werden die Prozesse abwechselnd mit jeweils der maximal zur Ver\-fügung stehenden Prozessorressource entsprechend ihrer Zeitscheibe verarbeitet.
+Unter Linux und unix\-artigen Systemen werden daher den beiden Prozessen Zeitscheiben zugeordnet und es findet eine sequentielle Abarbeitung statt. Anschließend werden die Prozesse abwechselnd mit jeweils der maximal zur Ver\-fügung stehenden Prozessorkapazität entsprechend ihrer Zeitscheibe verarbeitet.
 
 %Um mit diesem Prinzip eine Annäherung an einen perfekten Multitasking-Prozessor zu erreichen, müsste man die Zuteilung für jeden Prozess in unendlich kleine Zeitscheiben zerlegen und alternierend dem Prozessor zuweisen.
 Je kleiner die Zeitscheiben gewählt werden, desto mehr wird ein nahezu zeitgleiches Abarbeiten der anstehenden Prozesse erreicht.
@@ -59,17 +59,16 @@ Hierbei ist \textit{se$\rightarrow$load.weight} das Gewicht des Prozesses aus de
 
 
 In dieser Tabelle sind die entsprechenden Zuweisungen vom \textit{nice}-Wert zum Gewicht dargestellt. 
-Dabei sind alle vierzig \textit{nice}-Werte mit entsprechenden Gewichten der Reihe nach absteigend dargestellt.
-Spalte eins und Zeile zwei dienen dabei als Hilfsindex zum Ablesen. Das passende Gewicht zum \textit{nice}-Wert -18, kann z.B. in der Zeile mit \textit{nice}-Wert -20 und der Spalte +2 (Rechnung: -20+2=18) mit einem Wert von 56483 ermittelt werden.
-Die Abstände zwischen den Zahlen sind so gewählt, dass bei einem Auf- bzw. Absteigen eines \textit{nice}-Wertes die CPU-Zuteilungszeit um 10\% erhöht bzw. um 10\% erniedrigt wird. Damit ergibt sich ein annähernder Faktor zwischen den Gewichten von ca. 1,25. Dies kann im Kernel unter \texttt{sched.c} an entsprechender Stelle eingesehen werden. 
+Dabei sind alle vierzig \textit{nice}-Werte mit entsprechenden Gewichten der Reihe nach absteigend gezeigt.
+Spalte eins und Zeile zwei dienen dabei als Hilfsindex zum Ablesen. Das passende Gewicht zum \textit{nice}-Wert -18, kann z.B. in der Zeile mit \textit{nice}-Wert -20 und der Spalte +2 (Rechnung: -20+2=-18) mit einem Wert von 56483 ermittelt werden.
+Die Abstände zwischen den Zahlen sind so gewählt, dass bei einem Auf- bzw. Absteigen eines \textit{nice}-Wertes die CPU-Zuteilungszeit um 10\% erhöht bzw. um 10\% erniedrigt wird. Damit ergibt sich ein Faktor zwischen nebeneinander liegenden Gewichten von ca. 1,25. Dies kann Quellcode der Linux-Kernels unter \texttt{kernel/sched.c} an entsprechender Stelle eingesehen werden. 
 
 Die Variable \textit{cfs\_rq$\rightarrow$load.weight} ist die Summe aller Gewichte der momentan aktiven Prozesse der Warte\-schlan\-ge.
 
-\textit{period} ist ein Abschnitt, für welchen die Prozesse ihren entsprechenden proportionalen Zeitanteil erhalten. Dieser Wert ist einstellbar.
-
-Die maximal gültige Anzahl von Prozessen für diesen Zeitabschnitt kann z.B. mit der Division der aktuellen \textit{period} durch den Wert der kleinst möglichen Zeitscheibe, enthalten im Wert von  \texttt{sysctl\_sched\_min\_granulari\-ty}, ermittelt werden.  
+\textit{period} ist ein Zeitabschnitt, für welchen die Prozesse ihren entsprechenden proportionalen Zeitanteil erhalten sollen. Dieser Wert ist einstellbar.
+Die maximal mögliche Anzahl von Prozessen für diesen Zeitabschnitt kann z.B. mit der Division des Wertes \textit{period} der aktuellen Periode durch den Wert der kleinst mög\-li\-chen Zeitscheibe, enthalten in der Variablen \texttt{sys\-ctl\_sched\_min\_granulari\-ty}, ermittelt werden.  
 %Errechnet man z.B. die maximal gültige Anzahl von Prozessen für diesen Zeitabschnitt mit $period %/   und 
-Übersteigt die Anzahl der aktuellen Prozesse diesen Wert, so muss \textit{period} entsprechend angepasst werden.
+Über\-steigt die Anzahl der aktuellen Prozesse diesen Wert, so muss \textit{period} entsprechend angepasst werden.
 
 
 %Erreicht z.B. die Anzahl der lauf\-fähigen Prozesse eine bestimmte Grenze, so muss der Wert von \textit{period} erhöht werden. 
@@ -87,7 +86,7 @@ Die maximal gültige Anzahl von Prozessen für diesen Zeitabschnitt kann z.B. mi
 
 Im anschließenden Schritt soll eine faire Auswahl auf den nächsten ausführbaren Prozess getroffen werden. Dies geschieht mit einer weiteren Bewertung der Prozesse im Bezug zu ihrer bereits ausgeführten Zeit. 
 Dazu dient im CFS-Algorithmus die Variable \textit{virtual runtime}. In \cite{mjones} wird die \textit{virtual runtime} definiert als Menge der CPU-Zeit, die einem gewissen Prozess zugeordnet worden ist. Je kleiner der Wert für \textit{virtual runtime} ist, desto höher ist die Dringlichkeit dieser Aufgabe den Prozessor für sich zugewiesen zu bekommen. Ebenso beschreibt \cite{mjones} die Funktionalität von CFS, dass eine gewisse \textit{Sleeper-Fairness} implementiert ist: Aufgaben, die zu einem Zeitpunkt nicht lauffähig sind (z.B. beim Warten auf I/O"--Operationen) erhalten ei\-nen vergleichbaren Anteil am Prozessor, wenn sie diesen benö"-tigen.\\
-Die \textit{virtual runtime}-Variable wird aus dem Verhältnis von bereits absolvierter Zeit zu dem ermitteltem Gewicht des Prozesses gebildet und ist für die Dauer der Ausführungs"-zeit für jeden Prozess ständig steigend \cite{rlove}. 
+Die \textit{virtual runtime} Variable wird aus dem Verhältnis von bereits absolvierter Zeit zu dem ermitteltem Gewicht des Prozesses gebildet und ist für die Dauer der Ausführungs"-zeit für jeden Prozess ständig steigend \cite{rlove}. Mit diesem Verhältnis wird ein Wert geschaffen, der für alle aktiven Prozesse nach Ablauf der aktuellen Periode annäherungs\-weise gleich hoch ist. Damit ist möglich, dass \textit{completely-fairness} Prinzip trotz unterschiedlicher Gewichte und \textit{slices} einzuhalten. Dieses Verhätlnis dient somit als Maßzahl für die gerechte Verteilung der Prozesse auf die begrenzte Ressource. Wird immer der Prozess mit der niedrigsten \textit{virtual runtime} gewählt, so kann auch eine ständige An\-nähe\-rung an das \textit{completely-fair} Prinzip garantiert werden.
 
 Nach \cite{paperfairness} wird \textit{virtual runtime} mit folgender Formel ermittelt:
 
@@ -101,15 +100,15 @@ Hierbei stellt \textit{delta\_exec} die bereits ausgeführte Zeit der jeweiligen
 Mit Hilfe des ersten Terms aus Formel (\ref{eq:vruntime}) wird die aktuelle virtuelle Laufzeit des jeweiligen Prozesses bestimmt. Der zweite Term dient zur Bestimmung der allgemeinen virtuelle Laufzeit, welche jeder Prozess nach Ablauf der Periodenzeit \textit{period} für diesen Zeitabschnitt erreicht haben soll. 
 %Dieser Wert soll nach Ablauf der Periodenzeit für alle Prozess gleich sein.
 
-Mit \textit{vruntime} können nun die Prozesse entsprechend ihrer Laufzeit und ihrem Gewicht bewertet und eine Rangfolge erstellt werden. Dazu wird an dieser Stelle der Rot-Schwarz-Baum [s.Kapitel \ref{s:rb_tree}] verwendet. Die Prozesse werden nach ihrem \textit{virtual runtime}-Wert in den Baum einsortiert. Dabei steht der Prozess mit der kleinsten \textit{virtual runtime} am weitesten links und kann nun durch den Scheduler ohne lange Suchzeiten ermittelt und als nächster auszuführender Prozess ausgewählt werden. 
+Mit \textit{vruntime} können nun die Prozesse entsprechend ihrer Laufzeit und ihrem Gewicht bewertet und eine Rangfolge erstellt werden. Dazu wird an dieser Stelle der Rot-Schwarz-Baum [s.Kapitel \ref{s:rb_tree}] verwendet. Die Prozesse werden nach ihrem \textit{virtual runtime} Wert in den Baum einsortiert. Dabei steht der Prozess mit der kleinsten \textit{virtual runtime} am weitesten links und kann nun durch den Scheduler ohne lange Suchzeiten ermittelt und als nächster auszuführender Prozess ausgewählt werden. 
 
 Stehen zum Beispiel drei lauffähige Prozesse  mit \textit{nice}-Werten von  $0$, $1$ und $2$ und entsprechenden Gewichten von $1024$, $820$ und $655$ in einer Warteschlange für einen Prozessor, dann ergeben sich die idealen Zeitscheiben bei einer Periode von 20ms mit Formel (\ref{eq:slice}) zu $8.2ms$, $6.6ms$ und $5.2ms$.
-Ermittelt man dazu jetzt die passenden \textit{virtual runtime}-Werte mit Formel (\ref{eq:vruntime}) und zwar so, dass jeder Prozess seine Zuteilung für diese Periode vollständig ausgenutzt, so wird ersichtlich, dass alle Prozesse nun den gleichen \textit{virtual runtime}-Wert erreicht haben.
-Bei \textit{nice}-Wert 0 ergäbe es nach Einsetzten des oben berechneten \textit{slice}-Wertes von $8.2ms$ für \textit{delta\_exec} in Formel (\ref{eq:vruntime}), dem ermittelten Gewicht von $1024$ für \textit{se$\rightarrow$load.weight} und $NICE\_\\0\_LOAD$ von 1024 einen Wert von $8,2ms$.
+Ermittelt man dazu jetzt die passenden \textit{virtual runtime} Werte mit Formel (\ref{eq:vruntime}) und zwar so, dass jeder Prozess seine Zuteilung für diese Periode vollständig ausgenutzt, so wird ersichtlich, dass alle Prozesse nun den gleichen \textit{virtual runtime} Wert erreicht haben.
+Bei \textit{nice}-Wert 0 ergäbe es nach Einsetzten in Formel (\ref{eq:vruntime}) des bereits oben berechneten \textit{slice}-Wertes von $8.2ms$ für \textit{delta\_exec}, dem ermittelten Gewicht von $1024$ für \textit{se$\rightarrow$load.weight} und 1024 für $NICE\_0\_LOAD$  einen Wert von $8,2ms$.
 Für \textit{nice}-Wert 1 wird eine  \textit{virtual runtime} von ebenfalls $8,2ms$ erreicht und für \textit{nice} 2 ein Wert von $7,9ms$. 
 
-Damit wird gezeigt, dass der \textit{virtual runtime}-Wert dazu verwendet werden kann, um eine gerechte Aufteilung entsprechend der \textit{nice}-Werte zu ermöglichen. 
-Sind alle \textit{virtual runtime}-Werte nach Abschluss der Periode gleich, so wird das \textit{completely-fair} Prinzip erreicht.
+Damit wird gezeigt, dass der \textit{virtual runtime} Wert dazu verwendet werden kann, eine gerechte Aufteilung entsprechend der \textit{nice}-Werte zu erreichen. 
+Sind alle \textit{virtual runtime} Werte nach Abschluss der Periode gleich, so kann mit einer Annäherung an das \textit{completely-fair} gerechnet werden.
 %Ermittelt man nun dazu passend die \textit{virtual runtime}-Werte mit Formel (\ref{eq:runtime}) und zwar so, dass jeder Prozess seine Zuteilung für diese Periode vollständig ausgenutzt hätte, so wird ersichtlich, dass alle Prozesse nun den gleichen \textit{virtual runtime}-Wert erreicht haben.
 
  %von ca. $8*10^{-6}$ besitzen. Damit wird eine faire Aufteilung mit Be\-rück\-sichtigung der \textit{Prioritäten} gewährt.

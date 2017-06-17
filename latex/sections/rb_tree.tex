@@ -16,7 +16,7 @@ Während beim sequentiellen Suchen in Listen der Maxmimalwert der Laufzeit $O(n)
 
 Allerdings kann es auch durch ständiges Löschen und Ein-fügen von Elementen oder aber auch durch eine unvorteilhafte Wahl des Wurzelknotens dazu kommen, dass sich der Baum in einem Ungleichgewicht befindet. Dies bedeutet, dass eine Seite des Baumes erheblich mehr Knoten besitzt als die andere. Dadurch wird sich die Suchlaufzeit auf der einen Seite erhöhen und auf der anderen Seite ver\-kürzen. Im Extremfall wären alle Elemente auf einer Seite hintereinander angeordnet und somit wäre die Laufzeit gleich der einer sequentiellen Liste.
 
-Eine solche Fehlanpassung kann mit Hilfe der Regeln eines Rot-Schwarz-Baumes kompensiert werden. Dieser stellt eine Erweiterung des binären Suchbaums dar. Damit ist es möglich, einen sich ständig ändernden Baum in einem annähernden Gleichgewicht zu halten. 
+Eine solche Fehlanpassung kann mit Hilfe der Regeln eines Rot-Schwarz-Baumes kompensiert werden. Der Rot-Schwarz-Baum erweitert die Logiken eines binären Such\-baums. Damit ist es mög\-lich, einen sich ständig ändernden Baum in einem an\-nä\-hern\-den Gleichgewicht zu halten. 
 
 Der Rot-Schwarz-Baum erhält seinen Namen durch ein zusätzliches At\-tri\-but, welches an jeden Knoten an\-ge\-hängt wird und als Wert die Farbe Rot oder Schwarz enthalten kann. 
 Mit Hilfe dieses Attributes kann dann der Baum nach bestimmten Regeln bearbeitet werden. Diese Regeln sorgen dafür, dass immer ein grundlegendes Gleichgewicht im Baum herrscht. 
@@ -51,7 +51,7 @@ So müssen innerhalb dieser Einfüge- oder Lösch\-ope\-ra\-ti\-on\-en zum Beisp
 
 Werden die fünf Regeln unter allen Bedingungen und zu jeder Zeit eingehalten, so kann immer die maximale Laufzeit garantiert werden und außerdem können der kleinste und der größte Schlüssel immer direkt auf der linkesten beziehungsweise auf der rechtesten Seite gefunden werden.
 
-Der Rot-Schwarz-Baum hat im Vergleich zu anderen balancierten Baumvarianten eine niedrigere Operationzeit, da er z.B. wenige Rotationen nach Einfüge- bzw. Lösch\-vorgängen ausführen muss.
+Der Rot-Schwarz-Baum hat im Vergleich zu anderen balancierten Baumvarianten eine niedrigere Operationzeit, da er z.B. weniger Rotationen nach Einfüge- bzw. Lösch\-vorgängen ausführen muss.
 Daher ist er für Anwendungen mit einer hohen Zugriffsrate, wie z.B. dem CFS-Scheduler, zu bevorzugen.
 
 %Mit den Regeln von RED-BLACK wird mit Hilfe von zum Beispiel Rotationen um das den Parent Knoten, immer für das richtige Gleichgewicht gesorgt.
