@@ -29,16 +29,17 @@ Mit Hilfe dieses Gewichtes wird dann versucht, dass \textit{com\-pletely-fair} P
 Analog der Formel (\ref{eq:perfect_fairness}) wird zunächst mit Hilfe des ermittelten Gewichtes und der zu berechnenden Periode eine ideale Zeitscheibe errechnet: %Dies geschieht nach \cite{paperfairness} mit folgender Formel:  
 
 \begin{equation}
-slice_{\tau i} = \frac{weight_{\tau i}}{\sum_{j\in\varphi} weight_{\tau j}} * period
+slice_{i} = \frac{weight_{i}}{\sum_{i=1}^{n} weight_{i}} * period
 \label{eq:slice}
 \end{equation}
+%umme_{i=1}^{n} w %eight_i
 
 
 %\begin{equation}
 %slice = \frac{se\rightarrow load.weight}{cfs\_rq\rightarrow load.weight} * period
 %\label{eq:slice}
 %\end{equation}
-Hierbei ist \textit{$weight_{\tau i}$} das Gewicht des Prozesses aus dem entsprechendem \textit{nice}-Wert, welches durch ein von dem Kernel bereit gestelltes Array \texttt{prio\_to\_weight[]} bestimmt wird. In \cite{nikita} wird der Inhalt des Arrays mit folgenden Werten angegeben:
+Hierbei ist \textit{$weight_{i}$} das Gewicht des Prozesses aus dem entsprechendem \textit{nice}-Wert, welches durch ein von dem Kernel bereit gestelltes Array \texttt{prio\_to\_weight[]} bestimmt wird. In \cite{nikita} wird der Inhalt des Arrays mit folgenden Werten angegeben:
 
 %Hierbei ist \textit{se$\rightarrow$load.weight} das Gewicht des Prozesses aus dem entsprechendem \textit{nice}-Wert, welches durch ein von dem Kernel bereit gestelltes Array \texttt{prio\_to\_weight[]} bestimmt wird. In \cite{nikita} wird der Inhalt des Arrays mit folgenden Werten angegeben:
 
@@ -70,7 +71,7 @@ Dabei sind alle vierzig \textit{nice}-Werte mit entsprechenden Gewichten der Rei
 Spalte eins und Zeile zwei dienen dabei als Hilfsindex zum Ablesen. Das passende Gewicht zum \textit{nice}-Wert -18, kann z.B. in der Zeile mit \textit{nice}-Wert -20 und der Spalte +2 (Rechnung: -20+2=-18) mit einem Wert von 56483 ermittelt werden.
 Die Abstände zwischen den Zahlen sind so gewählt, dass bei einem Auf- bzw. Absteigen eines \textit{nice}-Wertes die CPU-Zuteilungszeit um 10\% erhöht bzw. um 10\% erniedrigt wird. Damit ergibt sich ein Faktor zwischen nebeneinander liegenden Gewichten von ca. 1,25. Dies kann Quellcode der Linux-Kernels unter \texttt{kernel/sched.c} an entsprechender Stelle eingesehen werden. 
 
-Der Ausdruck \textit{$\sum_{j\in\varphi} weight_{\tau j}$} ist die Summe aller Gewichte der momentan aktiven Prozesse der Warte\-schlan\-ge.
+Der Ausdruck \textit{$\sum_{i=1}^{n} weight_{i}$} ist die Summe aller Gewichte der momentan aktiven Prozesse der Warte\-schlan\-ge.
 %Die Variable \textit{cfs\_rq$\rightarrow$load.weight} ist die Summe aller Gewichte der momentan aktiven Prozesse der Warte\-schlan\-ge.
 
 \textit{period} ist ein Zeitabschnitt, für welchen die Prozesse ihren entsprechenden proportionalen Zeitanteil erhalten sollen. Dieser Wert ist einstellbar.
@@ -99,7 +100,7 @@ Die \textit{virtual runtime} Variable wird aus dem Verhältnis von bereits absol
 Nach \cite{paperfairness} wird \textit{virtual runtime} mit folgender Formel ermittelt:
 
 \begin{multline}
-virt. runtime(\tau_{i},t) \mathrel{+}= \frac{weight_{0}}{weight_{\tau i}} * runtime(\tau_{i},t) \\ = \frac{period}{\sum_{j\in\varphi} weight_{\tau j}} * weight_{0}
+virt. runtime_{i} \mathrel{+}= \frac{weight_{0}}{weight_{i}} * runtime(i,t) \\ = \frac{period}{\sum_{i=1}^{n} weight_{i}} * weight_{0}
 \label{eq:vruntime}
 \end{multline}
 
@@ -108,7 +109,7 @@ virt. runtime(\tau_{i},t) \mathrel{+}= \frac{weight_{0}}{weight_{\tau i}} * runt
 %\label{eq:vruntime}
 %\end{multline}
 
-Hierbei stellt \textit{runtime($\tau_{i},t)$} die bereits ausgeführte Zeit der jeweiligen Prozesses dar und \textit{$weight_{0}$} ist der Einheitswert der Gewichte, welcher das Gewicht des \textit{nice}-Wertes 0 darstellt.  
+Hierbei stellt $virt. runtime_{i}$ die bereits ausgeführte Zeit des jeweiligen Prozesses dar und \textit{$weight_{0}$} ist der Einheitswert der Gewichte, welcher das Gewicht des \textit{nice}-Wertes 0 darstellt.  
 %Hierbei stellt \textit{delta\_exec} die bereits ausgeführte Zeit der jeweiligen Prozesses dar und \textit{NICE\_0\_LOAD} ist der Einheitswert der Gewichte, welcher das Gewicht des \textit{nice}-Wertes 0 darstellt.  
 %welcher aus einer statischen 10-bit Dualzahl besteht $(2^{10}=1024)$ \cite{paperfairness}. 
 Mit Hilfe des ersten Terms aus Formel (\ref{eq:vruntime}) wird die aktuelle virtuellen Laufzeit des jeweiligen Prozesses bestimmt. Der zweite Term dient zur Bestimmung der allgemeinen virtuelle Laufzeit, welche jeder Prozess nach Ablauf der Periodenzeit \textit{period} für diesen Zeitabschnitt erreicht haben soll. 
@@ -118,7 +119,7 @@ Mit der \textit{virtual runtime} können nun die Prozesse entsprechend ihrer Lau
 
 Stehen zum Beispiel drei lauffähige Prozesse  mit \textit{nice}-Werten von  $0$, $1$ und $2$ und entsprechenden Gewichten von $1024$, $820$ und $655$ in einer Warteschlange für einen Prozessor, dann ergeben sich die idealen Zeitscheiben bei einer Periode von 20ms mit Formel (\ref{eq:slice}) gerundet zu $8.2ms$, $6.6ms$ und $5.2ms$.
 Ermittelt man dazu jetzt die passenden \textit{virtual runtime} Werte mit Formel (\ref{eq:vruntime}) und zwar so, dass jeder Prozess seine Zuteilung für diese Periode vollständig ausgenutzt, so wird ersichtlich, dass alle Prozesse nun den gleichen \textit{virtual runtime} Wert erreicht haben.
-Bei \textit{nice}-Wert 0 ergäbe es nach Einsetzten in Formel (\ref{eq:vruntime}) des bereits oben berechneten \textit{slice}-Wertes von $8.2ms$ für  $runtime(\tau_{i},t)$, dem ermittelten Gewicht von $1024$ für $weight_{\tau i}$ und 1024 für $weight_{0}$ einen Wert von $8,2ms$.
+Bei \textit{nice}-Wert 0 ergäbe es nach Einsetzten in Formel (\ref{eq:vruntime}) des bereits oben berechneten \textit{slice}-Wertes von $8.2ms$ für  $runtime(i,t)$, dem ermittelten Gewicht von $1024$ für $weight_{i}$ und 1024 für $weight_{0}$ einen Wert von $8,2ms$.
 Für \textit{nice}-Wert 1 wird eine \textit{virtual runtime} von ebenfalls $8,24ms$ erreicht und für \textit{nice} 2 ein Wert von $8,13ms$. 
 
 Damit wird gezeigt, dass der \textit{virtual runtime} Wert dazu verwendet werden kann, eine gerechte Aufteilung entsprechend der \textit{nice}-Werte zu erreichen. 
