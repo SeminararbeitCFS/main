@@ -1,16 +1,12 @@
 \subsection{Funktionsweise}\label{s:cfs_fktweise}
 
-%hier sollten wir mal reinschauen:
-%https://www.ece.ubc.ca/~sasha/papers/eurosys16-final29.pdf
-%HAB AUCH SCHON WAS GEFUNDEN...ABER SCHAUE ICH MIR AUCH MAL AN...
-
 %Das Ziel eines  Completely-Fair-Schedulers{} soll es sein, eine gute Annäherung an das Verhalten eines perfekten Multitasking-Prozessor zu errreichen.
 Das Ziel eines  Completely-Fair-Schedulers{} soll es sein, eine faire Aufteilung der Ressource Prozessor unter einer Menge von ausführbaren Prozessen zu erreichen.
 
 
 %Ein perfekter Multi\-tasking-Prozessor würde jedem Prozess immer ein perfektes $1/n$ Verhältnis zuweisen, wobei $n$ die Menge aller Prozesse darstellt."
 Im einfachsten Fall, wenn keine Prioritäten unter den Prozessen vergeben werden, ist eine perfekte Aufteilung der Ressource dann gegeben, wenn zu jedem Zeitpunkt jeder Prozess immer eine Zuteilung im Verhältnis $1/n$ erhält, wobei $n$ die Menge aller Prozesse darstellt.
-Bei zwei laufenden Prozessen heißt das, dass beide Prozesse zeitgleich mit jeweils 50 Prozent der Prozessorressource arbeiten. Dies ist in der Praxis allerdings nicht möglich, da jeder Prozessor immer nur eine Aufgabe zu einem Zeitpunkt bearbeiten kann.
+Bei zwei laufenden Prozessen heißt das, dass beide Prozesse zeitgleich mit jeweils 50 Prozent der Prozessorressource arbeiten. Dies ist in der Praxis allerdings nicht möglich, da jeder Prozessor immer nur einen Prozess zu einem Zeitpunkt ausführen kann.
 
 Unter Linux und unix\-artigen Systemen werden daher den beiden Prozessen Zeitscheiben zugeordnet und es findet eine sequentielle Abarbeitung statt. Anschließend werden die Prozesse abwechselnd mit jeweils der maximal zur Ver\-fügung stehenden Prozessorkapazität entsprechend ihrer Zeitscheibe verarbeitet.
 
@@ -68,8 +64,9 @@ Hierbei ist \textit{$weight_{i}$} das Gewicht des Prozesses aus dem entsprechend
 
 In dieser Tabelle sind die entsprechenden Zuweisungen vom \textit{nice}-Wert zum Gewicht dargestellt. 
 Dabei sind alle vierzig \textit{nice}-Werte mit entsprechenden Gewichten der Reihe nach absteigend gezeigt.
-Spalte eins und Zeile zwei dienen dabei als Hilfsindex zum Ablesen. Das passende Gewicht zum \textit{nice}-Wert -18, kann z.B. in der Zeile mit \textit{nice}-Wert -20 und der Spalte +2 (Rechnung: -20+2=-18) mit einem Wert von 56483 ermittelt werden.
-Die Abstände zwischen den Zahlen sind so gewählt, dass bei einem Auf- bzw. Absteigen eines \textit{nice}-Wertes die CPU-Zuteilungszeit um 10\% erhöht bzw. um 10\% erniedrigt wird. Damit ergibt sich ein Faktor zwischen nebeneinander liegenden Gewichten von ca. 1,25. Dies kann Quellcode der Linux-Kernels unter \texttt{kernel/sched.c} an entsprechender Stelle eingesehen werden. 
+Spalte eins und Zeile zwei dienen dabei als Hilfsindex zum Ablesen. Das passende Gewicht zum \textit{nice}-Wert -18, kann z.B. in der Zeile mit \textit{nice}-Wert -20 und der Spalte +2 (Rechnung: -20+2=-18) mit einem Wert von 56483 ermittelt werden.\\
+Die angegebenen Gewichte ensprechen ungefähr der Rechnung $1024/1.25^{nice}$.
+%Die Abstände zwischen den Zahlen sind so gewählt, dass bei einem Auf- bzw. Absteigen eines \textit{nice}-Wertes die CPU-Zuteilungszeit um 10\% erhöht bzw. um 10\% erniedrigt wird. Damit ergibt sich ein Faktor zwischen nebeneinander liegenden Gewichten von ca. 1,25. Dies kann Quellcode der Linux-Kernels unter \texttt{kernel/sched.c} an entsprechender Stelle eingesehen werden. 
 
 Der Ausdruck \textit{$\sum_{i=1}^{n} weight_{i}$} ist die Summe aller Gewichte der momentan aktiven Prozesse der Warte\-schlan\-ge.
 %Die Variable \textit{cfs\_rq$\rightarrow$load.weight} ist die Summe aller Gewichte der momentan aktiven Prozesse der Warte\-schlan\-ge.
@@ -93,37 +90,54 @@ Die maximal mögliche Anzahl von Prozessen für diesen Zeitabschnitt kann z.B. m
 
 %Somit gibt die Variable \textit{nr\_latency} die maximal mögliche Anzahl von Prozessen mit gegebenen Parametern vor. Über\-steigt nun die Anzahl der aktuell lauffähigen Prozesse diesen Wert, so muss der Wert von \textit{period}, bzw. in Formel (\ref{eq:nr_latency}) ensprechend \textit{sysctl\_sched\_latency}, erhöht werden.
 
-Im anschließenden Schritt soll eine faire Auswahl auf den nächsten ausführbaren Prozess getroffen werden. Dies geschieht mit einer weiteren Bewertung der Prozesse im Bezug zu ihrer bereits ausgeführten Zeit. 
-Dazu dient im CFS-Algorithmus die Variable \textit{virtual runtime}. In \cite{mjones} wird die \textit{virtual runtime} definiert als Menge der CPU-Zeit, die einem gewissen Prozess zugeordnet worden ist. Je kleiner der Wert für \textit{virtual runtime} ist, desto höher ist die Dringlichkeit dieser Aufgabe den Prozessor für sich zugewiesen zu bekommen. Ebenso beschreibt \cite{mjones} die Funktionalität von CFS, dass eine gewisse \textit{Sleeper-Fairness} implementiert ist: Aufgaben, die zu einem Zeitpunkt nicht lauffähig sind (z.B. beim Warten auf I/O"--Operationen) erhalten ei\-nen vergleichbaren Anteil am Prozessor, wenn sie diesen benö"-tigen.\\
-Die \textit{virtual runtime} Variable wird aus dem Verhältnis von bereits absolvierter Zeit zu dem ermitteltem Gewicht des Prozesses gebildet und ist für die Dauer der Ausführungs"-zeit für jeden Prozess ständig steigend \cite{rlove}. Mit diesem Verhältnis wird ein Wert geschaffen, der für alle aktiven Prozesse nach Ablauf der aktuellen Periode annäherungs\-weise gleich hoch ist. Damit ist möglich, dass \textit{completely-fairness} Prinzip trotz unterschiedlicher Gewichte und \textit{slices} einzuhalten. Dieses Verhätlnis dient somit als Maßzahl für die gerechte Verteilung der Prozesse auf die begrenzte Ressource. Wird immer der Prozess mit der niedrigsten \textit{virtual runtime} gewählt, so kann auch eine ständige An\-nähe\-rung an das \textit{completely-fair} Prinzip garantiert werden.
-
-Nach \cite{paperfairness} wird \textit{virtual runtime} mit folgender Formel ermittelt:
-
-\begin{multline}
-virt. runtime_{i} \mathrel{+}= \frac{weight_{0}}{weight_{i}} * runtime(i,t) \\ = \frac{period}{\sum_{i=1}^{n} weight_{i}} * weight_{0}
+Im anschließenden Schritt soll eine faire Auswahl auf den nächsten ausführbaren Prozess getroffen werden. Dies geschieht mit einer weiteren Bewertung der Prozesse im Bezug zu ihrer bereits ausgeführten Zeit. Dazu dient im CFS-Algorithmus die Variable \textit{virtual runtime}. Nach \cite{usenix} ist dieser Wert der Quotient der erhaltenen CPU-Zeit zu einem Zeitpunkt $t$ und dem proportionalen Gewicht $S_A$ aus Formel (\ref{eq:perfect_fairness}):
+\begin{equation}
+virt. \ runtime(t) = \frac{W_{i}(t)}{weight_{i}}
 \label{eq:vruntime}
-\end{multline}
-
+\end{equation}
+Mit diesem Verhältnis wird ein Wert geschaffen, der für alle aktiven Prozesse nach Ablauf der aktuellen Periode annäherungs\-weise gleich hoch ist.\\
+Unter der Annahme, dass ein Prozess i die CPU-Zeit $W_{i}$ im Zeitinterval $[0,t]$ erhalten hat und $W_{i}$ die perfekte Fairness erfüllt, gilt:
+\begin{equation}
+W_{i}(t) = \frac{weight_{i}}{\sum_{j=1}^{n} weight_j} * t
+\label{eq:cputime}
+\end{equation}
+Formel (\ref{eq:cputime}) eingesetzt in Formel (\ref{eq:vruntime}) ergibt nach Kürzen:
+\begin{equation}
+virt. \ runtime(t) = \frac{t}{\sum_{j=1}^{n} weight_j}
+\label{eq:vruntime2}
+\end{equation}
+Bei Betrachtung der rechten Seite des Terms ist zu erkennen, dass die \textit{virtual runtime} für die Dauer der Ausführungs"-zeit für jeden Prozess ständig steigend ist \cite{rlove}. Ebenso ist die \textit{virtual runtime} nach Zeit $t$ für jeden Prozess gleich, es erreichen alle Prozesse die perfekte Fairness. 
+Je kleiner der Wert für \textit{virtual runtime} ist, desto höher ist die Dringlichkeit dieses Prozesses den Prozessor für sich zugewiesen zu bekommen. 
+Wird immer der Prozess mit der niedrigsten \textit{virtual runtime} gewählt, so kann auch eine ständige An\-nähe\-rung an das \textit{completely-fair} Prinzip garantiert werden. 
+Damit ist möglich, dass \textit{completely-fairness} Prinzip trotz unterschiedlicher Gewichte und \textit{slices} einzuhalten.
+%Ferner beschreibt \cite{mjones} die Funktionalität von CFS, dass eine gewisse \textit{Sleeper-Fairness} implementiert ist: Prozesse, die zu einem Zeitpunkt nicht lauffähig sind (z.B. beim Warten auf I/O"--Operationen) erhalten ei\-nen vergleichbaren Anteil am Prozessor, wenn sie diesen benö"-tigen.\\
+%Nach \cite{paperfairness} wird \textit{virtual runtime} mit folgender Formel ermittelt:
+%\begin{multline}
+%virt. runtime_{i} \mathrel{+}= \frac{weight_{0}}{weight_{i}} * runtime(i,t) \\ = \frac{period}{\sum_{i=1}^{n} weight_{i}} * weight_{0}
+%\label{eq:vruntime}
+%\end{multline}
 %\begin{multline}
 %vruntime \mathrel{+}= \frac{delta\_exec}{se\rightarrow load.weight} * NICE\_0\_LOAD \\ = \frac{period}{cfs\_rq\rightarrow load.weight} * NICE\_0\_LOAD
 %\label{eq:vruntime}
 %\end{multline}
 
-Hierbei stellt $virt. runtime_{i}$ die bereits ausgeführte Zeit des jeweiligen Prozesses dar und \textit{$weight_{0}$} ist der Einheitswert der Gewichte, welcher das Gewicht des \textit{nice}-Wertes 0 darstellt.  
+%Hierbei stellt $virt. runtime_{i}$ die bereits ausgeführte Zeit des jeweiligen Prozesses dar und \textit{$weight_{0}$} ist der Einheitswert der Gewichte, welcher das Gewicht des \textit{nice}-Wertes 0 darstellt.  
 %Hierbei stellt \textit{delta\_exec} die bereits ausgeführte Zeit der jeweiligen Prozesses dar und \textit{NICE\_0\_LOAD} ist der Einheitswert der Gewichte, welcher das Gewicht des \textit{nice}-Wertes 0 darstellt.  
 %welcher aus einer statischen 10-bit Dualzahl besteht $(2^{10}=1024)$ \cite{paperfairness}. 
-Mit Hilfe des ersten Terms aus Formel (\ref{eq:vruntime}) wird die aktuelle virtuellen Laufzeit des jeweiligen Prozesses bestimmt. Der zweite Term dient zur Bestimmung der allgemeinen virtuelle Laufzeit, welche jeder Prozess nach Ablauf der Periodenzeit \textit{period} für diesen Zeitabschnitt erreicht haben soll. 
+%Mit Hilfe des ersten Terms aus Formel (\ref{eq:vruntime}) wird die aktuelle virtuellen Laufzeit des jeweiligen Prozesses bestimmt. Der zweite Term dient zur Bestimmung der allgemeinen virtuelle Laufzeit, welche jeder Prozess nach Ablauf der Periodenzeit \textit{period} für diesen Zeitabschnitt erreicht haben soll. 
 %Dieser Wert soll nach Ablauf der Periodenzeit für alle Prozess gleich sein.
 
 Mit der \textit{virtual runtime} können nun die Prozesse entsprechend ihrer Laufzeit und ihrem Gewicht bewertet und eine Rangfolge erstellt werden. Dazu wird an dieser Stelle der Rot-Schwarz-Baum [s.Kapitel \ref{s:rb_tree}] verwendet. Die Prozesse werden nach ihrem \textit{virtual runtime} Wert in den Baum einsortiert. Dabei steht der Prozess mit der kleinsten \textit{virtual runtime} am weitesten links und kann nun durch den Scheduler ohne lange Suchzeiten ermittelt und als nächster auszuführender Prozess ausgewählt werden. 
 
-Stehen zum Beispiel drei lauffähige Prozesse  mit \textit{nice}-Werten von  $0$, $1$ und $2$ und entsprechenden Gewichten von $1024$, $820$ und $655$ in einer Warteschlange für einen Prozessor, dann ergeben sich die idealen Zeitscheiben bei einer Periode von 20ms mit Formel (\ref{eq:slice}) gerundet zu $8.2ms$, $6.6ms$ und $5.2ms$.
-Ermittelt man dazu jetzt die passenden \textit{virtual runtime} Werte mit Formel (\ref{eq:vruntime}) und zwar so, dass jeder Prozess seine Zuteilung für diese Periode vollständig ausgenutzt, so wird ersichtlich, dass alle Prozesse nun den gleichen \textit{virtual runtime} Wert erreicht haben.
-Bei \textit{nice}-Wert 0 ergäbe es nach Einsetzten in Formel (\ref{eq:vruntime}) des bereits oben berechneten \textit{slice}-Wertes von $8.2ms$ für  $runtime(i,t)$, dem ermittelten Gewicht von $1024$ für $weight_{i}$ und 1024 für $weight_{0}$ einen Wert von $8,2ms$.
-Für \textit{nice}-Wert 1 wird eine \textit{virtual runtime} von ebenfalls $8,24ms$ erreicht und für \textit{nice} 2 ein Wert von $8,13ms$. 
+
+Stehen zum Beispiel drei lauffähige Prozesse  mit \textit{nice}-Werten von  $0$, $1$ und $2$ und entsprechenden Gewichten von $1024$, $820$ und $655$ in einer Warteschlange für einen Prozessor, dann ergeben sich die idealen Zeitscheiben bei einer Periode von $20ms$ mit Formel (\ref{eq:slice}) gerundet zu $8.2ms$, $6.6ms$ und $5.2ms$ und in Summe genau $20ms$. Für die \textit{virtual runtime} nach $t=20ms$ ergibt sich also mit Formel (\ref{eq:vruntime2}) ein Wert von $20ms/(1024+820+655)=0.008ms$.
+
+
 
 Damit wird gezeigt, dass der \textit{virtual runtime} Wert dazu verwendet werden kann, eine gerechte Aufteilung entsprechend der \textit{nice}-Werte zu erreichen. 
 Sind alle \textit{virtual runtime} Werte nach Abschluss der Periode gleich, so kann mit einer Annäherung an das \textit{completely-fair} gerechnet werden.
+
+
 %Ermittelt man nun dazu passend die \textit{virtual runtime}-Werte mit Formel (\ref{eq:runtime}) und zwar so, dass jeder Prozess seine Zuteilung für diese Periode vollständig ausgenutzt hätte, so wird ersichtlich, dass alle Prozesse nun den gleichen \textit{virtual runtime}-Wert erreicht haben.
 
  %von ca. $8*10^{-6}$ besitzen. Damit wird eine faire Aufteilung mit Be\-rück\-sichtigung der \textit{Prioritäten} gewährt.
