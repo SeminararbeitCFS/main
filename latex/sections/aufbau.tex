@@ -90,7 +90,7 @@ Die maximal mögliche Anzahl von Prozessen für diesen Zeitabschnitt kann z.B. m
 
 %Somit gibt die Variable \textit{nr\_latency} die maximal mögliche Anzahl von Prozessen mit gegebenen Parametern vor. Über\-steigt nun die Anzahl der aktuell lauffähigen Prozesse diesen Wert, so muss der Wert von \textit{period}, bzw. in Formel (\ref{eq:nr_latency}) ensprechend \textit{sysctl\_sched\_latency}, erhöht werden.
 
-Im anschließenden Schritt soll eine faire Auswahl auf den nächsten ausführbaren Prozess getroffen werden. Dies geschieht mit einer weiteren Bewertung der Prozesse im Bezug zu ihrer bereits ausgeführten Zeit. Dazu dient im CFS-Algorithmus die Variable \textit{virtual runtime}. Nach \cite{usenix} ist dieser Wert der Quotient der erhaltenen CPU-Zeit $W_{i}$ zu einem Zeitpunkt $t$ und dem ermittelten Gewicht \textit{$weight_{i}$} des Prozesses.
+Im anschließenden Schritt soll eine faire Auswahl auf den nächsten ausführbaren Prozess getroffen werden. Dies geschieht mit einer weiteren Bewertung der Prozesse im Bezug zu ihrer bereits ausgeführten Zeit. Dazu dient im CFS-Algorithmus die Variable \textit{virtual runtime}. Nach \cite{usenix} ist dieser Wert der Quotient der erhaltenen CPU-Zeit $W_{i}$ zu einem Zeitpunkt $t$ und dem ermittelten Gewicht \textit{$weight_{i}$} des Prozesses $i$.
 %dem proportionalen Gewicht $S_A$ aus Formel (\ref{eq:perfect_fairness}):
 \begin{equation}
 virt. \ runtime(t) = \frac{W_{i}(t)}{weight_{i}}
